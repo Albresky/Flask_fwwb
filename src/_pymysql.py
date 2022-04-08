@@ -60,14 +60,6 @@ class dBase:
         return False
 
 
-    def getLocation(self):
-        sql = "SELECT * FROM User_3"
-        # 执行SQL语句
-        self.cursor.execute(sql)
-        # 获取所有记录列表
-        results = self.cursor.fetchall()
-        # print(results)
-        self.close_db()
-        return json.dumps(results[0])
+
 
 
