@@ -11,57 +11,60 @@ from _pymysql import *
 
 # 继承dBase父类
 class Register(dBase):
-    def isExist(self, ID):
-        print("triggerred isExiist()")
-        ID = "'" + ID + "'"
-        sql = "SELECT * FROM login WHERE userid = " + ID
+    def isExist(self, account):
+        print("triggerred Register.isExiist()")
+        sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
         self.cursor.execute(sql)
         result = self.cursor.fetchone()
         print(result)
-        if result is not None:
+        if result is None:
             return False
         return True
 
-    def insert(self, param):
-        print("triggerred insert()")
-        if self.isExist(param[0]) is False:
-            return False
+    def register(self, nickname, param):
+        print("triggerred register()")
+        if self.isExist(param[0]):
+            return 0
         now = myTime()
         param = param + (now,)
-        if self.insert_sms_data(param):
+        if self.register_insert_data(nickname, param):
             if self.userCheck(param):
                 self.close_db()
-                return True
+                return 1
         self.close_db()
-        return False
+        return -1
 
-    def insert_sms_data(self, param):
-        print("insert_sms_data()")
-        sql = 'insert into login (userid, username, pwd, phoneNum, time) values (%s,%s,%s,%s,%s)'
+    def register_insert_data(self, nickname, param):
+        print("triggerred register_insert_data()")
+        sql = "INSERT INTO RegisterInfo VALUES ('%s','%s','%s')" % (param[0],param[1],param[2])
+        sql2 = "INSERT INTO UserPersonalInfo (Account, Nickname) VALUES ('%s','%s')" % (
+            param[0], nickname)
         print(sql)
+        print(sql2)
         try:
-            self.cursor.execute(sql, param)
+            self.cursor.execute(sql)
+            self.cursor.execute(sql2)
             self.conn.commit()
         except mysql.connector.Error as e:
             print('sql connect fails!{}'.format(e))
+            self.conn.rollback()
             return False
-        finally:
-            print("insert_sms_data() PASS!")
+        else:
+            print("register_insert_data() Success!")
             return True
 
     def userCheck(self, param):
-        print("user info valid checking...")
-        par1 = "'" + param[0] + "'"
-        par2 = "'" + param[2] + "'"
-        sql = "SELECT * FROM login WHERE 'userid' = " + par1 + " AND 'password' = " + par2
-        print("sql=>".format(sql))
+        print("triggerred userCheck()")
+        sql = "SELECT * FROM RegisterInfo WHERE Account = '%s' AND Password = '%s'" % (param[0], param[1])
         try:
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
             print(result)
-        except:
-            print("userCheck FAIL!")
-            raise
-        finally:
+            if result is None:
+                print("userCheck FAIL!")
+                return False
+        except Exception as e:
+            raise "Esception => {}".format(e)
+        else:
             print("userCheck PASS!")
             return True

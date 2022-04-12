@@ -20,11 +20,10 @@ class Health(dBase):
         self.close_db()
         return json.dumps(results[0])
 
-
     # Get the latest health data from database
     def getHealth(self, userid):
-        sql ="SELECT * from Health WHERE 'userid' = userid"
+        sql = "SELECT * from Health WHERE 'userid' = %s" % userid
         self.cursor.execute(sql)
-        results=self.cursor.fetchall()[0]
+        results = self.cursor.fetchall()[0]
         self.close_db()
         return json.dumps(results)

@@ -7,33 +7,24 @@
 
 
 from _pymysql import *
+from functions import isNone
 
 
 # 继承dBase父类
 class Login(dBase):
-    def isExist(self, ID):
-        print("triggerred Login()=>isExist()")
-        ID = "'" + ID + "'"
-        sql = "SELECT * FROM login WHERE userid = " + ID
+    def isExist(self, account):
+        print("triggerred Register.isExiist()")
+        sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
         self.cursor.execute(sql)
         result = self.cursor.fetchone()
-        print(sql)
         print(result)
         if result is None:
-            print("user do not exist")
             return False
-        print("user exists")
         return True
 
     def userCheck(self, param):
-        print("user info valid checking...")
-        if self.isExist(param[0]) is False:
-            return False
-        par1 = "'" + param[0] + "'"
-        par2 = "'" + param[1] + "'"
-        sql = "SELECT * FROM login WHERE (userid = " + par1 + " AND pwd = " + par2 + ");"
-        # sql = "SELECT * FROM login WHERE userid = " + par1
-        print(sql)
+        print("triggerred Login.userCheck()")
+        sql = "SELECT * FROM RegisterInfo WHERE Account = '%s' AND Password = '%s'" % (param[0], param[1])
         try:
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
@@ -41,32 +32,34 @@ class Login(dBase):
             if result is None:
                 print("userCheck FAIL!")
                 return False
-            else:
-                print("userCheck PASS!")
-                return True
         except Exception as e:
-            print(e)
-            return False
+            raise "Esception => {}".format(e)
+        else:
+            print("userCheck PASS!")
+            return True
 
-    def loadInfo(self, userid):
-        print("triggerred loadInfo")
-        userid = "'" + userid + "'"
-        print(userid)
-        sql = "SELECT * FROM login WHERE userid = " + userid
-        print(sql)
+    def loadInfo(self, account):
+        print("triggerred Register.loadInfo")
+        sql = "SELECT * FROM UserPersonalInfo WHERE Account = '%s'" % account
         _data = {
-            "account": 1,
+            "account": "",
             "nickname": "",
+            "gender": "",
+            "age": "",
+            "address": "",
             "relativesPhone": ""
         }
         try:
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
+            print(result)
             if result is not None:
-                _data["account"] = 1
-                _data["nickname"] = result[1]
-                if result[-1] is not None:
-                    _data["relativesPhone"] = result[-1]
+                _data["account"] = result[0]
+                _data["nickname"] = isNone(result[1])
+                _data["gender"] = isNone(result[2])
+                _data["age"] = isNone(result[3])
+                _data["address"] = isNone(result[4])
+                _data["relativesPhone"] = isNone(result[5])
                 print("get user info Success!=>{}".format(_data))
                 return _data
         except Exception as e:
