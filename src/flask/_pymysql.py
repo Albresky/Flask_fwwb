@@ -13,7 +13,7 @@ import json
 class dBase:
     def __init__(self, database):
         self.database = database
-        mysql_config = {
+        self.mysql_config = {
             'host': '124.221.124.7',
             'user': 'remote',
             'password': 'fwwb2022',
@@ -22,7 +22,7 @@ class dBase:
             # 'buffered':True
         }
         try:
-            self.conn = mysql.connector.connect(**mysql_config)
+            self.conn = mysql.connector.connect(**self.mysql_config)
             self.cursor = self.conn.cursor()
         except mysql.connector.Error as e:
             print('connect fails!{}'.format(e))
@@ -83,5 +83,8 @@ class dBase:
         self.close_db()
         if results is not None:
             return True
-
         return False
+
+    def initCursor(self):
+        self.conn = mysql.connector.connect(**self.mysql_config)
+        self.cursor = self.conn.cursor()

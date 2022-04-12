@@ -22,6 +22,7 @@ RegisterObj = []
 RegisterUserDict = []
 
 myModel = Model('User')
+myLogin = Login('User')
 
 app = Flask(__name__)
 
@@ -80,7 +81,7 @@ def login():
         print("Start Logining...")
         if account is not None and password is not None:
             param = (account, password)
-            myLogin = Login('User')
+            # myLogin = Login('User')
             if myLogin.userCheck(param) is False:
                 return '{"code":"false","Msg":"User do not exist!"}'
             else:
@@ -133,8 +134,8 @@ def getDriverInfoDaily():
         return json.dumps(results)
 
 
-@app.route('/model_result/download/weekly', methods=['POST'])
-def getDriverInfoWeekly():
+@app.route('/model_result/download/this_week', methods=['POST'])
+def getDriverInfoThisWeek():
     data = json.loads(request.data)
     print(data)
     account = data['account']
@@ -185,6 +186,45 @@ def model_upload():
     except Exception as e:
         print(e)
         return '{"code":"fail","Msg":"Exception triggered"}'
+
+
+@app.route('/model_result/download/weekly', methods=['POST'])
+def getDriverInfoWeekly():
+    data = json.loads(request.data)
+    print(data)
+    account = data['account']
+    action = data['action']
+    # rd=myLogin.getRegisterDate(account)
+    # print('rd={}'.format(rd))
+    registerWeek = date2AbsThisYearWeek(myLogin.getRegisterDate(account))
+    print("resgisterWeek:{}".format(registerWeek))
+    currentWeek = date2AbsThisYearWeek(datetime.now())
+    driverInfoWeekly = []
+    try:
+        for i in range(registerWeek, currentWeek + 1):
+            print("this Week => {}".format(i))
+            driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, i))
+
+        print(driverInfoWeekly)
+        leng = len(driverInfoWeekly)
+        if leng != 0:
+            data = {}
+            for i in range(leng):
+                data["第{}周".format(registerWeek + i)] = driverInfoWeekly[i]
+            print(data)
+            results = {
+                "code": "true",
+                "data": data
+            }
+            return json.dumps(results)
+        else:
+            return '{"code":"fail","Msg":"No records"}'
+
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        raise e
+    else:
+        return '{"code":"fail","data":"",Msg":"No records"}'
 
 
 @app.route('/deviceInit', methods=['POST'])

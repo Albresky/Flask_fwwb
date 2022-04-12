@@ -13,6 +13,7 @@ from functions import isNone
 # 继承dBase父类
 class Login(dBase):
     def isExist(self, account):
+        self.initCursor()
         print("triggerred Register.isExiist()")
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
         self.cursor.execute(sql)
@@ -23,6 +24,7 @@ class Login(dBase):
         return True
 
     def userCheck(self, param):
+        self.initCursor()
         print("triggerred Login.userCheck()")
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s' AND Password = '%s'" % (param[0], param[1])
         try:
@@ -38,7 +40,25 @@ class Login(dBase):
             print("userCheck PASS!")
             return True
 
+    def getRegisterDate(self, account):
+        self.initCursor()
+        print("triggerred Login.getRegisterDate")
+        sql = "SELECT Time FROM RegisterInfo WHERE Account = '%s'" % account
+        try:
+            self.cursor.execute(sql)
+            result=self.cursor.fetchone()[0]
+            if result is not None:
+                print("get User register date Success!=>{}".format(result))
+                return result
+            else:
+                print("get User register date Fail!")
+                return 0
+        except Exception as e:
+            print("Exception triggered => {}".format(e))
+            return 0
+
     def loadInfo(self, account):
+        self.initCursor()
         print("triggerred Register.loadInfo")
         sql = "SELECT * FROM UserPersonalInfo WHERE Account = '%s'" % account
         _data = {

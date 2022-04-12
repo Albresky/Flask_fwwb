@@ -157,6 +157,27 @@ class Model(dBase):
         print(results)
         return results
 
+    def getDriverInfoWeekly(self,account,action,week):
+        print("triggered getDriverInfoWeekly()")
+        sql ="SELECT COUNT(*) FROM ModelResult WHERE ( Account = '%s' AND Week = '%i' AND Label = '%s')"%(account,week,action)
+        print(sql)
+        try:
+            self.initCursor()
+            self.cursor.execute(sql)
+            res=self.cursor.fetchone()[0]
+            self.close_db()
+            if res is None:
+                return 0
+            else:
+                print("get action Success!")
+                return res
+        except Exception as e:
+            print(e)
+            return 0
+
+
+
+
     def getDriverInfoCurrentWeek(self, account,action):
         print("triggered getDriverInfoCurrentWeek()")
         weekdays=getCurrentWeekDays()

@@ -109,6 +109,20 @@ from datetime import timedelta
 
 # print(getCurrentWeekDays())
 
+# url = "http://124.221.124.7:5000/model_result/download/weekly"
+# data = {
+#     "account": "19149567122",
+#     "action":1
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
+
+
+# myModel=Model('User')
+# res=myModel.getDriverInfoCurrentWeek('19149567122','1')
+# print(res)
+
+
 url = "http://124.221.124.7:5000/model_result/download/weekly"
 data = {
     "account": "19149567122",
@@ -116,8 +130,3 @@ data = {
 }
 req = requests.post(url=url, data=json.dumps(data))
 print(req.text)
-
-
-# myModel=Model('User')
-# res=myModel.getDriverInfoCurrentWeek('19149567122','1')
-# print(res)
