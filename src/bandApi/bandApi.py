@@ -1,49 +1,12 @@
 ####################################
 # Crated:       Look at the stars  #
 # Date:         2022/02/15         #
-# Last edit:    2022/02/18         #
+# Last edit:    2022/04/14         #
 ####################################
 
+
 import requests
-import time
 import json
-import hashlib
-
-
-def _MD5(string):
-    _md5 = hashlib.md5()
-    _md5.update(string.encode())
-    return _md5.hexdigest()
-
-
-class VerifyToken:
-    def __init__(self, AppId, AppKey):
-        self.AppId = AppId
-        self.AppKey = AppKey
-
-        timeStamp = str(int(time.time()))
-        pwd_md5 = _MD5(self.AppKey + self.AppId + timeStamp)
-        Url = "http://openapi.traxbean.com/api/token/get_token?appid=" + self.AppId + "&Timestamp=" + timeStamp + "&Password=" + pwd_md5
-        Headers = {"Content-Type": "application/json"}
-
-        try:
-            response = requests.get(url=Url, headers=Headers)
-            if response.content:
-                _json = json.loads(response.text)
-                if (_json['Msg'] == "Success"):
-                    self.userid = str(_json['Result']['UserId'])
-                    self.token = _json['Result']['AccessToken']
-        except Exception as e:
-            print('Exception triggerred in requesting token => {}'.format(e))
-        else:
-            print('request token Success!')
-
-    # token生命: 2小时, 每次请求data, token生命都将恢复至2小时
-    def get_token(self):
-        return self.token
-
-    def get_userid(self):
-        return self.userid
 
 
 # mapType: 'google' or 'baidu'
@@ -53,7 +16,7 @@ class Location:
         self.token = token
         self.mapType = mapType
         self.location = json.loads(requests.get(url=
-                                                "http://openapi.traxbean.com/api//devicelist/get_devicelist?AccessToken=" + self.token + '&userid=' + self.userid + '&MapType=' + self.mapType,
+                                                "http://openapi.traxbean.com/api/devicelist/get_devicelist?AccessToken=" + self.token + '&userid=' + self.userid + '&MapType=' + self.mapType,
                                                 headers={"Content-Type": "application/json"}).text)
 
         print(self.location)
@@ -86,9 +49,9 @@ class bandHealth:
         }
 
     def updateHealth(self):
-        # if self.detectHR() is not True or self.detectBP() is not True:
-        #     print("detect fail")
-        #     return False
+        if self.detectHR() is False or self.detectBP() is False:
+            print("detect fail")
+            return False
 
         try:
             req = requests.get(
@@ -107,19 +70,19 @@ class bandHealth:
             print("Exception triggered => {}".format(e))
 
     def detectHR(self):
-        url = "http://openapi.traxbean.com/api/Command/sendComand"
-        data = {
-            "Imei": self.imei,
-            "CmdCode": "9012",
-            "AccessToken": self.token,
-            "Params": ""
-        }
+        url = "http://openapi.traxbean.com/api/Command/sendComand?AccessToken=" + self.token + "&Imei=" + self.imei+ "&CmdCode=9012"
+        # data = {
+        #     "Imei": self.imei,
+        #     "CmdCode": "9012",
+        #     "AccessToken": self.token,
+        #     "Params": ""
+        # }
         try:
-            req=requests.post(url=url,data=json.dumps(data),headers=self.headers)
-            res = req.text
+            req=requests.get(url=url,headers=self.headers)
+            res=json.loads(req.text)
             print(res)
             if req.status_code ==200:
-                if res["Msg"]=="成功":
+                if res["Msg"]=="ok":
                     return True
                 else:
                     return False
@@ -128,20 +91,20 @@ class bandHealth:
 
 
     def detectBP(self):
-        url = "http://openapi.traxbean.com/api/Command/sendComand"
-        data = {
-            "Imei": self.imei,
-            "CmdCode": "9013",
-            "AccessToken": self.token,
-            "Params":""
-        }
+        url = "http://openapi.traxbean.com/api/Command/sendComand?AccessToken=" + self.token + "&Imei=" + self.imei+ "&CmdCode=9013"
+        # data = {
+        #     "Imei": self.imei,
+        #     "CmdCode": "9013",
+        #     "AccessToken": self.token,
+        #     "Params":""
+        # }
         try:
-            req=requests.post(url=url,data=json.dumps(data),headers=self.headers)
+            req=requests.get(url=url,headers=self.headers)
             res = req.text
             print(res)
             if req.status_code ==200:
-                res=req.text
-                if res["Msg"]=="成功":
+                res=json.loads(req.text)
+                if res["Msg"]=="ok":
                     return True
                 else:
                     return False

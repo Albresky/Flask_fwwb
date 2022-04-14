@@ -7,7 +7,6 @@
 
 import mysql.connector
 from functions import *
-import json
 
 
 class dBase:
@@ -83,5 +82,6 @@ class dBase:
         return False
 
     def initCursor(self):
+        print("init cursor...")
         self.conn = mysql.connector.connect(**self.mysql_config)
         self.cursor = self.conn.cursor()

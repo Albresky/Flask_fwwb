@@ -8,7 +8,6 @@
 import os
 import sys
 
-sys.path.append('..')
 
 from _pymysql import *
 from bandApi.bandApi import bandHealth

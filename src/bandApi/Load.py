@@ -7,8 +7,10 @@
 
 
 import configparser
+import sys
+sys.path.append("/home/fwwbFlask/bandApi")
 from datetime import datetime
-from bandApi import VerifyToken
+from utils import Verify
 
 class Config:
     def __init__(self, path):
@@ -47,7 +49,7 @@ def getUT(cfg):
     nowTime=datetime.strptime(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"%Y-%m-%d %H:%M:%S")
 
     if (nowTime - updateTime).total_seconds()  >= 7200.0:
-        myVerify = VerifyToken(AppId, AppKey)
+        myVerify = Verify(AppId, AppKey)
         UserId = myVerify.get_userid()
         Token = myVerify.get_token()
         cfg.setConfig("API","UserId",UserId)

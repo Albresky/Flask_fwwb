@@ -1,8 +1,8 @@
 #!/usr/bin/python3.6
 # -*- coding: utf-8 -*-
 # @Author  : Loot at the stars
-# @Time    : 2022/3/31 22:17
-# @File    : Register.py
+# @Time    : 2022/4/14 17:33
+# @File    : UserInfo.py
 # @Software: PyCharm
 
 
@@ -10,9 +10,9 @@ from _pymysql import *
 
 
 # 继承dBase父类
-class Register(dBase):
+class UserInfo(dBase):
     def isExist(self, account):
-        print("triggerred Register.isExiist()")
+        print("triggerred UserInfo.isExiist()")
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
         self.cursor.execute(sql)
         result = self.cursor.fetchone()
@@ -21,8 +21,8 @@ class Register(dBase):
             return False
         return True
 
-    def register(self, nickname, param):
-        print("triggerred Register.register()")
+    def updateInfo(self, nickname, param):
+        print("triggerred register()")
         if self.isExist(param[0]):
             return 0
         now = myTime()

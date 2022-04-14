@@ -4,31 +4,61 @@
 # @Time    : 2022/4/9 8:46
 # @File    : testFun.py
 # @Software: PyCharm
+
+
+
 import datetime
 import json
 import random
 import sys
-
+print(sys.path)
 from functions import *
 import time
 from _pymysql import *
 from Model import *
-from Health import *
+from Health import Health
 import requests
 import urllib.request
 from _pymysql import dBase
 from datetime import datetime, timedelta
 from datetime import timedelta
 
-sys.path.append("/home/fwwbFlask/bandApi")
-print(sys.path)
+# sys.path.append("/home/fwwbFlask/bandApi")
+
 
 health = Health('User')
 health.insertHealth('19149567122')
 
 
 
+# url = "http://124.221.124.7:5000/user/updateRelativesInfo"
+# data = {
+#     "account": "18795688976",
+#     "relativesPhone": "19999999999"
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
 
+
+# url = "http://124.221.124.7:5000/user/updatePersonalInfo"
+# data = {
+#     "account": "18795688976",
+#     "nickname":"John",
+#     "gender": "male",
+#     "age":"20",
+#     "address":"Beijing"
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
+
+# url = "http://124.221.124.7:5000/user/changePwd"
+# data = {
+#     "account": "18795688976",
+#     "oldPassword":"newPWD",
+#     "newPassword":"newdddddPWD"
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
 
 
 

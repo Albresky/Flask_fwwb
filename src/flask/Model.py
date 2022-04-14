@@ -62,26 +62,26 @@ class Model(dBase):
     def initConn(self):
         self.conn = mysql.connector.connect(**self.mysql_config)
 
-    def createTable(self, table):
-        try:
-            result = self.cursor.execute("""
-            CREATE TABLE `{}` (
-              `UserId` varchar(32) NOT NULL COMMENT 'userid',
-              `Label` varchar(32) NOT NULL COMMENT '标签',
-              `Possibility` float(5,4) NOT NULL COMMENT '置信度',
-              `Time` datetime NOT NULL COMMENT '发生时间',
-              PRIMARY KEY `Userid` (`Userid`) USING BTREE
-            ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='动作识别模型结果表'
-            """.format(table))
-            if result == 0:
-                print("数据表创建成功!")
-            else:
-                print("数据表创建失败")
-        except Exception as e:
-            print("表添加出现异常，异常信息：%s" % e)
-        finally:
-            # 4关闭游标
-            self.close_db()
+    # def createTable(self, table):
+    #     try:
+    #         result = self.cursor.execute("""
+    #         CREATE TABLE `{}` (
+    #           `UserId` varchar(32) NOT NULL COMMENT 'userid',
+    #           `Label` varchar(32) NOT NULL COMMENT '标签',
+    #           `Possibility` float(5,4) NOT NULL COMMENT '置信度',
+    #           `Time` datetime NOT NULL COMMENT '发生时间',
+    #           PRIMARY KEY `Userid` (`Userid`) USING BTREE
+    #         ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='动作识别模型结果表'
+    #         """.format(table))
+    #         if result == 0:
+    #             print("数据表创建成功!")
+    #         else:
+    #             print("数据表创建失败")
+    #     except Exception as e:
+    #         print("表添加出现异常，异常信息：%s" % e)
+    #     finally:
+    #         # 4关闭游标
+    #         self.close_db()
 
     def getLatest(self, account, label):
         print("now Label => {}".format(label))

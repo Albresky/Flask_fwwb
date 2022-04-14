@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 # @Author  : Loot at the stars
 # @Time    : 2022/3/7 20:14
-# @File    : testEnv.py
+# @File    : response.py
 # @Software: PyCharm
 
+
+import random
 import flask
 import json
 import datetime
@@ -116,9 +118,10 @@ def getDriverInfoDaily():
                     "noSafetyBelts": res['12'],
                     "smoke": res['10'],
                     "other": res['3'] + res['4'] + res['5'] + res['13'] + res['6'] + res['11'],
-                    "textingAndOperatingTheRadio": res['3'] + res['4'],
+                    "operatingTheRadio": res['4'],
                     "drinking": res['5'],
                     "nodding": res['13'],
+                    "touchingHairAndMakingUp":res['7'],
                     "reachingBehindAndTurningHead": res['6'] + res['11']
                 }
             }
@@ -158,8 +161,6 @@ def getDriverInfoThisWeek():
         return json.dumps(results)
     except Exception as e:
         print("Exception triggered => {}".format(e))
-        raise e
-    else:
         result = {
             "code": "false",
             "data": ""
@@ -220,15 +221,108 @@ def getDriverInfoWeekly():
 
     except Exception as e:
         print("Exception triggered => {}".format(e))
-        raise e
-    else:
-        return '{"code":"fail","data":"",Msg":"No records"}'
+        return '{"code":"fail","data":"",Msg":"Exception triggered"}'
+
+
+@app.route('/user/updatePersonalInfo',methods=['POST'])
+def updatePersonalInfo():
+    data = json.loads(request.data)
+    print(data)
+    account= data['account']
+    nickname= data['nickname']
+    gender= data['gender']
+    age= data['age']
+    address= data['address']
+    param = (nickname,gender,age,address,account)
+    try:
+        if myLogin.UpdateUserInfo(param):
+            print("UpdateUserInfo Success!")
+            return '{"code":"true","Msg":"Update UserInfo Success!"}'
+        else:
+            print("UpdateUserInfo Fail!")
+            return '{"code":"false","Msg":"Update UserInfo Fail"}'
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        return '{"code":"false","Msg":"Update UserInfo Fail"}'
+
+
+@app.route('/user/updateRelativesInfo',methods=['POST'])
+def updateRelativesInfo():
+    data = json.loads(request.data)
+    account= data['account']
+    relativesPhone= data['relativesPhone']
+    param = (relativesPhone,account)
+    try:
+        if myLogin.UpdateRelativesInfo(param):
+            print("UpdateRelativesInfo Success!")
+            return '{"code":"true","Msg":"Update RelativesInfo Success!"}'
+        else:
+            print("UpdateUserInfo Fail!")
+            return '{"code":"false","Msg":"Update RelativesInfo Fail"}'
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        return '{"code":"false","Msg":"Exception triggered!"}'
 
 
 
-@app.route('/get/health',methods=['POST'])
+@app.route('/user/changePwd',methods=['POST'])
+def changePwd():
+    data = json.loads(request.data)
+    param=(data["newPassword"],data["oldPassword"],data["account"])
+    try:
+        if myLogin.ChangePwd(param):
+            print("Change password Success!")
+            return '{"code":"true","Msg":"Change Password Success!"}'
+        else:
+            print("Change password Fail!")
+            return '{"code":"false","Msg":"Change Password Fail!"}'
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        return '{"code":"false","Msg":"Exception triggered!"}'
+
+
+
+# This is a test for mainPage
+@app.route('/get/health', methods=['POST'])
 def get_health():
-    data=json.loads(requests.data)
+    data = json.loads(request.data)
+    return_data = {
+        "code": "true",
+        "data": {
+            "temperature": random.randint(36, 37),
+            "heartBeat": random.randint(56, 92),
+            "bloodPressureHigh": random.random(98, 104),
+            "bloodPressureLow": random.randint(70, 80),
+            "oximetry": random.randint(88, 94),
+            "drivingTime": random.randint(1, 5),
+            "location": "中国",
+            "weather": "多云",
+            "temperatures": random.randint(14, 25)
+        }
+    }
+    return json.dumps(return_data)
+
+
+@app.route('/get/someHealth', methods=["POST"])
+def getSomeHealth():
+    data = json.loads(request.data)
+    account = data['account']
+    category = data["indicator"]
+    return_data = {
+        "code": "true",
+        "data": {
+            "realTimeData":
+                str(random.randint(1, 15)) + ':' +
+                str(random.randint(23, 240) + ':' +
+                    str(random.randint(1, 24)) + ':' +
+                    str(random.randint(1, 24)) + ':' +
+                    str(random.randint(1, 24)) + ':' +
+                    str(random.randint(1, 24)) + ':' +
+                    str(random.randint(1, 24))
+                    )
+        }
+    }
+    return json.dumps(return_data)
 
 
 @app.route('/deviceInit', methods=['POST'])
