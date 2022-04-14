@@ -30,9 +30,6 @@ class dBase:
             print("database={} => connect Success".format(database))
 
 
-    def initCursor(self):
-        self.cursor = self.conn.cursor()
-
     def close_db(self):
         if self.cursor is not None:
             self.cursor.close()

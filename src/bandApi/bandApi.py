@@ -6,7 +6,6 @@
 
 import requests
 import time
-import urllib.request
 import json
 import hashlib
 
@@ -17,7 +16,7 @@ def _MD5(string):
     return _md5.hexdigest()
 
 
-class verify:
+class VerifyToken:
     def __init__(self, AppId, AppKey):
         self.AppId = AppId
         self.AppKey = AppKey
@@ -31,11 +30,11 @@ class verify:
             response = requests.get(url=Url, headers=Headers)
             if response.content:
                 _json = json.loads(response.text)
-                if (_json['Msg'] == 'Success'):
+                if (_json['Msg'] == "Success"):
                     self.userid = str(_json['Result']['UserId'])
                     self.token = _json['Result']['AccessToken']
-        except:
-            print('Error in requesting token')
+        except Exception as e:
+            print('Exception triggerred in requesting token => {}'.format(e))
         else:
             print('request token Success!')
 
@@ -48,13 +47,13 @@ class verify:
 
 
 # mapType: 'google' or 'baidu'
-class get_location:
+class Location:
     def __init__(self, userid, token, mapType):
         self.userid = userid
         self.token = token
         self.mapType = mapType
         self.location = json.loads(requests.get(url=
-                                                'http://openapi.traxbean.com/api//devicelist/get_devicelist?AccessToken=' + self.token + '&userid=' + self.userid + '&MapType=' + self.mapType,
+                                                "http://openapi.traxbean.com/api//devicelist/get_devicelist?AccessToken=" + self.token + '&userid=' + self.userid + '&MapType=' + self.mapType,
                                                 headers={"Content-Type": "application/json"}).text)
 
         print(self.location)
@@ -76,19 +75,83 @@ class get_location:
         return self.location['Result'][0]['Speed']
 
 
-class get_health:
+class bandHealth:
     def __init__(self, userid, token):
         self.userid = userid
         self.token = token
         self.imei = '860316001210078'
-        self.health_data = json.loads(requests.get(url=
-                                                   'http://openapi.traxbean.com/api/devicelist/get_health?AccessToken=' + self.token + '&Imel=' + self.imei,
-                                                   headers={"Content-Type": "application/json"}).text)
-        print(self.health_data)
+        self.health_data = None
+        self.headers={
+            "Content-Type": "application/json"
+        }
+
+    def updateHealth(self):
+        # if self.detectHR() is not True or self.detectBP() is not True:
+        #     print("detect fail")
+        #     return False
+
+        try:
+            req = requests.get(
+                url="http://openapi.traxbean.com/api/devicelist/get_health?AccessToken=" + self.token + '&Imel=' + self.imei,
+                headers={"Content-Type": "application/json"})
+            if req.status_code == 200:
+                print("Health Data Get Success!")
+                res = req.text
+                self.health_data = json.loads(res)
+                print(self.health_data)
+                return True
+            else:
+                print("request fail!")
+                return False
+        except Exception as e:
+            print("Exception triggered => {}".format(e))
+
+    def detectHR(self):
+        url = "http://openapi.traxbean.com/api/Command/sendComand"
+        data = {
+            "Imei": self.imei,
+            "CmdCode": "9012",
+            "AccessToken": self.token,
+            "Params": ""
+        }
+        try:
+            req=requests.post(url=url,data=json.dumps(data),headers=self.headers)
+            res = req.text
+            print(res)
+            if req.status_code ==200:
+                if res["Msg"]=="成功":
+                    return True
+                else:
+                    return False
+        except Exception as e:
+            print("Exception triggered => {}".format(e))
+
+
+    def detectBP(self):
+        url = "http://openapi.traxbean.com/api/Command/sendComand"
+        data = {
+            "Imei": self.imei,
+            "CmdCode": "9013",
+            "AccessToken": self.token,
+            "Params":""
+        }
+        try:
+            req=requests.post(url=url,data=json.dumps(data),headers=self.headers)
+            res = req.text
+            print(res)
+            if req.status_code ==200:
+                res=req.text
+                if res["Msg"]=="成功":
+                    return True
+                else:
+                    return False
+
+        except Exception as e:
+            print("Exception triggered => {}".format(e))
 
     # 身体温度
     def BodyTemperature(self):
-        return str(self.health_data['BodyTtemperature'])
+        return self.health_data['BodyTtemperature']
 
     # 距离
     def distance(self):
@@ -104,7 +167,7 @@ class get_health:
 
     # 心率
     def heartRate(self):
-        return str(self.health_data['HeartRate'])
+        return self.health_data['HeartRate']
 
     # 获取心率的时间 (String)
     def heartRateTime(self):
@@ -124,7 +187,7 @@ class get_health:
 
     # 血氧
     def bloodOxygen(self):
-        return str(self.health_data['OX'])
+        return self.health_data['OX']
 
     # 睡眠时长
     def sleepAll(self):

@@ -88,9 +88,13 @@ class Model(dBase):
         sql = "SELECT Label FROM User.ModelResult WHERE Account = '%s' ORDER BY Time DESC LIMIT 0,1" % account
         try:
             self.cursor.execute(sql)
-            result = self.cursor.fetchone()[0]
+            res = self.cursor.fetchone()
+            if res is None:
+                print("Can not get last record!")
+                return False
+            result=res[0]
             self.close_db()
-            print("last Label => {}".format(result))
+            print("results:{} | last Label:{}".format(result,label))
             if result == label:
                 print("result is same as now_label")
                 return True
@@ -132,7 +136,7 @@ class Model(dBase):
         print("triggered getCountDaily()")
         dateBegin = date + " 00:00:00"
         dateEnd = date + " 23:59:59"
-        sql = "SELECT COUNT(*) FROM User.ModelResult WHERE (Account = '%s' AND (Time BETWEEN '%s' AND '%s') AND (Label = '%s'))" % (
+        sql = "SELECT SUM(Validate) FROM User.ModelResult WHERE (Account = '%s' AND (Time BETWEEN '%s' AND '%s') AND (Label = '%s'))" % (
             account, dateBegin, dateEnd, item)
         try:
             self.initConn()
@@ -174,7 +178,6 @@ class Model(dBase):
         except Exception as e:
             print(e)
             return 0
-
 
 
 

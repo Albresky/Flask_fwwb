@@ -6,6 +6,8 @@
 # @Software: PyCharm
 
 from datetime import datetime, timedelta
+
+import requests
 from dateutil import rrule
 
 
@@ -63,3 +65,15 @@ def getCurrentWeekDays():
     for i in range(7):
         weekdays.append((this_week_start + timedelta(days=i)).strftime("%Y-%m-%d"))
     return weekdays
+
+
+def getWeather(location):
+    url = "http://api.help.bj.cn/apis/weather/?id=" + str(location)
+    try:
+        res = requests.get(url=url)
+        if res.status_code == 200:
+            pass
+        # ToDo
+    except:
+        pass
+

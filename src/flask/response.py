@@ -101,10 +101,10 @@ def getDriverInfoDaily():
     try:
         data = json.loads(request.data)
         print(data)
-        account = data['Account']
-        date = data['Date']
+        account = data['account']
+        date = data['date']
         res = myModel.getDriverInfoDaily(account, date)
-        print("daily => ".format(res))
+        print("daily => {}".format(res))
         if res is not None:
             results = {
                 "code": "true",
@@ -172,7 +172,7 @@ def getDriverInfoThisWeek():
 def model_upload():
     try:
         data = json.loads(request.data)
-        print("data=>{}".format(data))
+        print("data => {}".format(data))
         account = data['Account']
         label = data['Label']
         possibility = float(data['Possibility'])
@@ -180,9 +180,9 @@ def model_upload():
         param = (account, label, possibility, time)
         print(param)
         if myModel.insert(param):
-            return '{"code":"true","Msg":"model result restore Success!"}'
+            return '{"code":"true","Msg":"model result store Success!"}'
         else:
-            return '{"code":"fail","Msg":"model result restore Fail"}'
+            return '{"code":"fail","Msg":"model result store Fail"}'
     except Exception as e:
         print(e)
         return '{"code":"fail","Msg":"Exception triggered"}'
@@ -194,8 +194,6 @@ def getDriverInfoWeekly():
     print(data)
     account = data['account']
     action = data['action']
-    # rd=myLogin.getRegisterDate(account)
-    # print('rd={}'.format(rd))
     registerWeek = date2AbsThisYearWeek(myLogin.getRegisterDate(account))
     print("resgisterWeek:{}".format(registerWeek))
     currentWeek = date2AbsThisYearWeek(datetime.now())
@@ -225,6 +223,12 @@ def getDriverInfoWeekly():
         raise e
     else:
         return '{"code":"fail","data":"",Msg":"No records"}'
+
+
+
+@app.route('/get/health',methods=['POST'])
+def get_health():
+    data=json.loads(requests.data)
 
 
 @app.route('/deviceInit', methods=['POST'])
