@@ -48,6 +48,9 @@ def getUT(cfg):
 
     nowTime=datetime.strptime(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"%Y-%m-%d %H:%M:%S")
 
+    print("Token Last Update Time=>{}".format(str(updateTime)))
+    print("Now Time=>{}".format(str(nowTime)))
+
     if (nowTime - updateTime).total_seconds()  >= 7200.0:
         myVerify = Verify(AppId, AppKey)
         UserId = myVerify.get_userid()

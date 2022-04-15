@@ -19,7 +19,7 @@ class Model(dBase):
             'yawning',
             'texting',
             'operating_the_radio',
-            'dring',
+            'drinking',
             'reaching_behind',
             'touching_hair_and_making_up',
             'talking_on_the_phone',
@@ -50,43 +50,12 @@ class Model(dBase):
 
         super().__init__(database)
 
-    def myinit(self):
-        try:
-            self.conn = mysql.connector.connect(**self.mysql_config)
-            self.cursor = self.conn.cursor()
-        except mysql.connector.Error as e:
-            print('connect fails!{}'.format(e))
-        finally:
-            print("database={} => connect Success".format(self.database))
-
-    def initConn(self):
-        self.conn = mysql.connector.connect(**self.mysql_config)
-
-    # def createTable(self, table):
-    #     try:
-    #         result = self.cursor.execute("""
-    #         CREATE TABLE `{}` (
-    #           `UserId` varchar(32) NOT NULL COMMENT 'userid',
-    #           `Label` varchar(32) NOT NULL COMMENT '标签',
-    #           `Possibility` float(5,4) NOT NULL COMMENT '置信度',
-    #           `Time` datetime NOT NULL COMMENT '发生时间',
-    #           PRIMARY KEY `Userid` (`Userid`) USING BTREE
-    #         ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='动作识别模型结果表'
-    #         """.format(table))
-    #         if result == 0:
-    #             print("数据表创建成功!")
-    #         else:
-    #             print("数据表创建失败")
-    #     except Exception as e:
-    #         print("表添加出现异常，异常信息：%s" % e)
-    #     finally:
-    #         # 4关闭游标
-    #         self.close_db()
 
     def getLatest(self, account, label):
         print("now Label => {}".format(label))
-        sql = "SELECT Label FROM User.ModelResult WHERE Account = '%s' ORDER BY Time DESC LIMIT 0,1" % account
+        sql = "SELECT Label FROM ModelResult WHERE Account = '%s' ORDER BY Time DESC LIMIT 0,1" % account
         try:
+            self.initCursor()
             self.cursor.execute(sql)
             res = self.cursor.fetchone()
             if res is None:
@@ -105,20 +74,19 @@ class Model(dBase):
             print(e)
             raise e
 
+
+
     def insert(self, param):
-        self.initConn()
-        self.initCursor()
         print("triggerred Model.insert()")
         week = date2AbsThisYearWeek(param[3])
         if self.getLatest(param[0], param[1]):
-            sql = "insert into User.ModelResult (Account, Label, Possibility, Time ,Week,Validate) values ('%s','%s','%s','%s','%s','%i')" % (
+            sql = "insert into ModelResult (Account, Label, Possibility, Time ,Week,Validate) values ('%s','%s','%s','%s','%s','%i')" % (
                 param[0], param[1], param[2], param[3], week, 0)
         else:
-            sql = "insert into User.ModelResult (Account, Label, Possibility, Time ,Week,Validate) values ('%s','%s','%s','%s','%s','%i')" % (
+            sql = "insert into ModelResult (Account, Label, Possibility, Time ,Week,Validate) values ('%s','%s','%s','%s','%s','%i')" % (
                 param[0], param[1], param[2], param[3], week, 1)
         try:
             print(sql)
-            self.initConn()
             self.initCursor()
             self.cursor.execute(sql)
             self.conn.commit()
@@ -131,39 +99,50 @@ class Model(dBase):
             print("insert_model_data() Success!")
             return True
 
+
+
     def getCountDaily(self, account, date, item):
-        print("label:{}".format(item))
         print("triggered getCountDaily()")
+        print("label:{}".format(item))
         dateBegin = date + " 00:00:00"
         dateEnd = date + " 23:59:59"
-        sql = "SELECT SUM(Validate) FROM User.ModelResult WHERE (Account = '%s' AND (Time BETWEEN '%s' AND '%s') AND (Label = '%s'))" % (
+        sql = "SELECT SUM(Validate) FROM ModelResult WHERE (Account = '%s' AND (Time BETWEEN '%s' AND '%s') AND (Label = '%s'))" % (
             account, dateBegin, dateEnd, item)
         try:
-            self.initConn()
+            print(sql)
             self.initCursor()
+            print("InitCursor() Success!")
             self.cursor.execute(sql)
-            res = self.cursor.fetchone()[0]
-            print(res)
-            print("result => {}".format(res))
+            print("Sql executed Success!")
+            res = self.cursor.fetchone()
             self.close_db()
+            print(res)
             if res is None:
                 return 0
-            return int(res)
+            elif res[0] is None:
+                return 0
+            else:
+                return int(res[0])
         except Exception as e:
-            print(e)
-            return 0
+            print("Exception triggerred =>{}".format(e))
+            pass
+            # return 0
+
+
 
     def getDriverInfoDaily(self, account, Datetime):
         print("triggered getDriverInfoDaily()")
         results = {}
-        for i in range(14):
+        for i in range(13):
             results["{}".format(i)] = self.getCountDaily(account, Datetime, i)
         print(results)
         return results
 
+
+
     def getDriverInfoWeekly(self,account,action,week):
         print("triggered getDriverInfoWeekly()")
-        sql ="SELECT COUNT(*) FROM ModelResult WHERE ( Account = '%s' AND Week = '%i' AND Label = '%s')"%(account,week,action)
+        sql ="SELECT SUM(Validate) FROM ModelResult WHERE ( Account = '%s' AND Week = '%i' AND Label = '%s')"%(account,week,action)
         print(sql)
         try:
             self.initCursor()
@@ -178,7 +157,6 @@ class Model(dBase):
         except Exception as e:
             print(e)
             return 0
-
 
 
     def getDriverInfoCurrentWeek(self, account,action):

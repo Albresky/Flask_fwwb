@@ -52,7 +52,6 @@ class bandHealth:
         if self.detectHR() is False or self.detectBP() is False:
             print("detect fail")
             return False
-
         try:
             req = requests.get(
                 url="http://openapi.traxbean.com/api/devicelist/get_health?AccessToken=" + self.token + '&Imel=' + self.imei,
@@ -61,7 +60,9 @@ class bandHealth:
                 print("Health Data Get Success!")
                 res = req.text
                 self.health_data = json.loads(res)
+                print("##########Health Data#############")
                 print(self.health_data)
+                print("##########Health Data#############")
                 return True
             else:
                 print("request fail!")
@@ -71,12 +72,6 @@ class bandHealth:
 
     def detectHR(self):
         url = "http://openapi.traxbean.com/api/Command/sendComand?AccessToken=" + self.token + "&Imei=" + self.imei+ "&CmdCode=9012"
-        # data = {
-        #     "Imei": self.imei,
-        #     "CmdCode": "9012",
-        #     "AccessToken": self.token,
-        #     "Params": ""
-        # }
         try:
             req=requests.get(url=url,headers=self.headers)
             res=json.loads(req.text)
@@ -92,12 +87,6 @@ class bandHealth:
 
     def detectBP(self):
         url = "http://openapi.traxbean.com/api/Command/sendComand?AccessToken=" + self.token + "&Imei=" + self.imei+ "&CmdCode=9013"
-        # data = {
-        #     "Imei": self.imei,
-        #     "CmdCode": "9013",
-        #     "AccessToken": self.token,
-        #     "Params":""
-        # }
         try:
             req=requests.get(url=url,headers=self.headers)
             res = req.text

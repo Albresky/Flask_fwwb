@@ -101,16 +101,14 @@ try:
     # """)
 
 
-    # result = mycur.execute("""
-    # CREATE TABLE `UserPersonalInfo` (
-    #   `Account` varchar(32) NOT NULL COMMENT '用户ID',
-    #   `Nickname` varchar(32) NOT NULL COMMENT '用户昵称',
-    #   `Gender` varchar(4) NOT NULL COMMENT '性别',
-    #   `Address` float(5,4) COMMENT '用户地址',
-    #   `RalativesPhone` varchar(20) NOT NULL COMMENT '紧急联系人电话',
-    #   PRIMARY KEY `Acccout` (`Account`) USING BTREE
-    # ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='用户注册信息表'
-    # """)
+    result = mycur.execute("""
+    CREATE TABLE `Alcohol` (
+        `Account` varchar(32) NOT NULL COMMENT '用户ID',
+        `PPM` float(4,1) NOT NULL COMMENT '酒精浓度',
+        `Time` datetime NOT NULL COMMENT '检测时间',
+        PRIMARY KEY `Time` (`Time`) USING BTREE
+    ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='用户酒精浓度表'
+    """)
 
     if result==0:
         print("数据表创建成功!")

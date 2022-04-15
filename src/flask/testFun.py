@@ -25,11 +25,26 @@ from datetime import timedelta
 
 # sys.path.append("/home/fwwbFlask/bandApi")
 
+#
+# health = Health('User')
+# health.uploadHealth('13182701023')
 
-health = Health('User')
-health.insertHealth('19149567122')
+
+url = "http://124.221.124.7:5000/user/someHealth"
+data = {
+    "account": "13182781023",
+    "indicator":"0"
+}
+req = requests.post(url=url, data=json.dumps(data))
+print(req.text)
 
 
+# url = "http://124.221.124.7:5000/user/health"
+# data = {
+#     "account": "13182701023"
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
 
 # url = "http://124.221.124.7:5000/user/updateRelativesInfo"
 # data = {
@@ -107,13 +122,17 @@ health.insertHealth('19149567122')
 #     req = requests.post(url=url, data=data_json)
 #     print(req.text)
 #     time.sleep(5)
-    # url = "http://124.221.124.7:5000/model_result/download/daily"
-    # data = {
-    #     "account": "19149567122",
-    #     "date":"2022-04-13"
-    # }
-    # req = requests.post(url=url, data=json.dumps(data))
-    # print(req.text)
+
+# while True:
+# url = "http://124.221.124.7:5000/model_result/download/daily"
+# data = {
+#     "account": "13182781023",
+#     "date":"2022-04-15"
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# req2= requests.post(url=url, data=json.dumps(data))
+# print(req.text)
+# print(req2.text)
 
 
 # date=str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -170,7 +189,7 @@ health.insertHealth('19149567122')
 
 # url = "http://124.221.124.7:5000/model_result/download/weekly"
 # data = {
-#     "account": "19149567122",
+#     "account": "13182781023",
 #     "action":1
 # }
 # req = requests.post(url=url, data=json.dumps(data))

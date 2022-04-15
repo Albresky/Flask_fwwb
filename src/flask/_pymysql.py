@@ -83,5 +83,8 @@ class dBase:
 
     def initCursor(self):
         print("init cursor...")
-        self.conn = mysql.connector.connect(**self.mysql_config)
-        self.cursor = self.conn.cursor()
+        try:
+            self.conn = mysql.connector.connect(**self.mysql_config)
+            self.cursor = self.conn.cursor()
+        except mysql.connector.Error as e:
+            print('connect fails!{}'.format(e))

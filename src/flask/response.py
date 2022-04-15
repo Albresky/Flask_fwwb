@@ -16,6 +16,8 @@ from _pymysql import dBase
 from Login import Login
 from Register import Register
 from Model import Model
+from Health import Health
+from Alcohol import Alcohol
 from functions import *
 
 LoginObj = []
@@ -25,6 +27,8 @@ RegisterUserDict = []
 
 myModel = Model('User')
 myLogin = Login('User')
+myHealth = Health('User')
+myAlcohol = Alcohol('User')
 
 app = Flask(__name__)
 
@@ -98,9 +102,32 @@ def login():
         return '{"code":"false","Msg":"Login Fail! Flask Exception triggerred!"}'
 
 
-@app.route('/model_result/download/daily', methods=['POST'])
-def getDriverInfoDaily():
+
+@app.route('/alcohol',methods=['POST'])
+def UploadAlcohol():
     try:
+        data= json.loads(request.data)
+        account = data['account']
+        ppm = data['ppm']
+        time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        param = (account,ppm,time)
+        if  myAlcohol.upload_alcohol_data(param):
+            return '{"code":"true","Msg":"Upload Alcohol Success!"}'
+        else:
+            return '{"code":"false","Msg":"Upload Alcohol Fail!"}'
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        return '{"code":"false","Msg":"Exception triggered!"}'
+
+
+
+
+@app.route('/model_result/download/daily', methods=['POST'])
+def GetDriverInfoDaily():
+    try:
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        print(request)
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         data = json.loads(request.data)
         print(data)
         account = data['account']
@@ -114,15 +141,15 @@ def getDriverInfoDaily():
                     "closeEyes": res['1'],
                     "yawn": res['2'],
                     "playTelephone": res['3'],
-                    "callUp": res['9'],
-                    "noSafetyBelts": res['12'],
-                    "smoke": res['10'],
-                    "other": res['3'] + res['4'] + res['5'] + res['13'] + res['6'] + res['11'],
+                    "callUp": res['8'],
+                    "noSafetyBelts": res['11'],
+                    "smoke": res['9'],
+                    "other": res['4'] + res['5'] + res['6'] + res['7'] + res['10']+res['12'],
                     "operatingTheRadio": res['4'],
                     "drinking": res['5'],
-                    "nodding": res['13'],
-                    "touchingHairAndMakingUp":res['7'],
-                    "reachingBehindAndTurningHead": res['6'] + res['11']
+                    "nodding": res['12'],
+                    "touchingHairAndMakingUp": res['7'],
+                    "reachingBehindAndTurningHead": res['6'] + res['10']
                 }
             }
             return results
@@ -201,15 +228,16 @@ def getDriverInfoWeekly():
     driverInfoWeekly = []
     try:
         for i in range(registerWeek, currentWeek + 1):
-            print("this Week => {}".format(i))
+            print("Week => {}".format(i))
             driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, i))
 
         print(driverInfoWeekly)
         leng = len(driverInfoWeekly)
         if leng != 0:
-            data = {}
+            data = []
             for i in range(leng):
-                data["第{}周".format(registerWeek + i)] = driverInfoWeekly[i]
+                the_week = i + 1
+                data.append(str(the_week) + ":" + str(driverInfoWeekly[i]))
             print(data)
             results = {
                 "code": "true",
@@ -224,16 +252,16 @@ def getDriverInfoWeekly():
         return '{"code":"fail","data":"",Msg":"Exception triggered"}'
 
 
-@app.route('/user/updatePersonalInfo',methods=['POST'])
+@app.route('/user/updatePersonalInfo', methods=['POST'])
 def updatePersonalInfo():
     data = json.loads(request.data)
     print(data)
-    account= data['account']
-    nickname= data['nickname']
-    gender= data['gender']
-    age= data['age']
-    address= data['address']
-    param = (nickname,gender,age,address,account)
+    account = data['account']
+    nickname = data['nickname']
+    gender = data['gender']
+    age = data['age']
+    address = data['address']
+    param = (nickname, gender, age, address, account)
     try:
         if myLogin.UpdateUserInfo(param):
             print("UpdateUserInfo Success!")
@@ -246,12 +274,12 @@ def updatePersonalInfo():
         return '{"code":"false","Msg":"Update UserInfo Fail"}'
 
 
-@app.route('/user/updateRelativesInfo',methods=['POST'])
+@app.route('/user/updateRelativesInfo', methods=['POST'])
 def updateRelativesInfo():
     data = json.loads(request.data)
-    account= data['account']
-    relativesPhone= data['relativesPhone']
-    param = (relativesPhone,account)
+    account = data['account']
+    relativesPhone = data['relativesPhone']
+    param = (relativesPhone, account)
     try:
         if myLogin.UpdateRelativesInfo(param):
             print("UpdateRelativesInfo Success!")
@@ -264,11 +292,10 @@ def updateRelativesInfo():
         return '{"code":"false","Msg":"Exception triggered!"}'
 
 
-
-@app.route('/user/changePwd',methods=['POST'])
+@app.route('/user/changePwd', methods=['POST'])
 def changePwd():
     data = json.loads(request.data)
-    param=(data["newPassword"],data["oldPassword"],data["account"])
+    param = (data["newPassword"], data["oldPassword"], data["account"])
     try:
         if myLogin.ChangePwd(param):
             print("Change password Success!")
@@ -281,48 +308,64 @@ def changePwd():
         return '{"code":"false","Msg":"Exception triggered!"}'
 
 
-
 # This is a test for mainPage
-@app.route('/get/health', methods=['POST'])
+@app.route('/user/health', methods=['POST'])
 def get_health():
     data = json.loads(request.data)
-    return_data = {
-        "code": "true",
-        "data": {
-            "temperature": random.randint(36, 37),
-            "heartBeat": random.randint(56, 92),
-            "bloodPressureHigh": random.random(98, 104),
-            "bloodPressureLow": random.randint(70, 80),
-            "oximetry": random.randint(88, 94),
-            "drivingTime": random.randint(1, 5),
-            "location": "中国",
-            "weather": "多云",
-            "temperatures": random.randint(14, 25)
-        }
-    }
-    return json.dumps(return_data)
+    account = data["account"]
+    try:
+        healthData = myHealth.getHealth(account)
+        if healthData is not None:
+            return_data = {
+                "code": "true",
+                "data": {
+                    "temperature": healthData[1],
+                    "heartBeat": healthData[5],
+                    "bloodPressureHigh": healthData[2],
+                    "bloodPressureLow": healthData[3],
+                    "oximetry": healthData[4],
+                    "drivingTime": "123",
+                    "location": "中国",
+                    "weather": "多云",
+                    "temperatures": ''
+                },
+                "Msg": "Get HealthData Success!"
+            }
+        else:
+            return_data = {
+                "code": "false",
+                "Msg": "No HealthData Records"
+            }
+        return json.dumps(return_data)
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        return '{"code":"false","Msg":"Exception triggered!"}'
 
 
-@app.route('/get/someHealth', methods=["POST"])
+@app.route('/user/someHealth', methods=["POST"])
 def getSomeHealth():
     data = json.loads(request.data)
     account = data['account']
-    category = data["indicator"]
-    return_data = {
-        "code": "true",
-        "data": {
-            "realTimeData":
-                str(random.randint(1, 15)) + ':' +
-                str(random.randint(23, 240) + ':' +
-                    str(random.randint(1, 24)) + ':' +
-                    str(random.randint(1, 24)) + ':' +
-                    str(random.randint(1, 24)) + ':' +
-                    str(random.randint(1, 24)) + ':' +
-                    str(random.randint(1, 24))
-                    )
-        }
-    }
-    return json.dumps(return_data)
+    index = data["indicator"]
+    try:
+        results= myHealth.getHistory(account,index)
+        if results is not None:
+            history=[]
+            print(results)
+            for i in range(len(results)):
+                history.append(results[i][0])
+                return_data = {
+                    "code": "true",
+                    "data": {
+                        "realTimeData":history
+                        }
+                    }
+            return json.dumps(return_data)
+        else:
+            return '{"code":"false","Msg":"Exception triggered!"}'
+    except Exception as e:
+        print("Exception triggered => {}".format(e))
+        return '{"code":"false","Msg":"Exception triggered!"}'
 
 
 @app.route('/deviceInit', methods=['POST'])
@@ -349,4 +392,4 @@ def getGPS():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
