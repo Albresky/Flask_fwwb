@@ -75,7 +75,7 @@ def register():
             return '{"code":"false","Msg":"Register Information Invalid!"}'
     except Exception as e:
         print(e)
-        return '{"code":"false","Msg":"Register Fail! Flask Exception triggerred!"}'
+        return '{"code":"false","Msg":"Register Fail! Flask Exception triggered!"}'
 
 
 @app.route('/login', methods=['POST'])
@@ -100,7 +100,7 @@ def login():
             return '{"code":"false","Msg":"Username or password is Invalid!"}'
     except Exception as e:
         print(e)
-        return '{"code":"false","Msg":"Login Fail! Flask Exception triggerred!"}'
+        return '{"code":"false","Msg":"Login Fail! Flask Exception triggered!"}'
 
 
 @app.route('/alcohol', methods=['POST'])

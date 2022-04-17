@@ -12,7 +12,7 @@ from _pymysql import *
 # 继承dBase父类
 class UserInfo(dBase):
     def isExist(self, account):
-        print("triggerred UserInfo.isExiist()")
+        print("triggered UserInfo.isExiist()")
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
         self.cursor.execute(sql)
         result = self.cursor.fetchone()
@@ -22,7 +22,7 @@ class UserInfo(dBase):
         return True
 
     def updateInfo(self, nickname, param):
-        print("triggerred register()")
+        print("triggered register()")
         if self.isExist(param[0]):
             return 0
         now = myTime()
@@ -35,7 +35,7 @@ class UserInfo(dBase):
         return -1
 
     def register_insert_data(self, nickname, param):
-        print("triggerred register_insert_data()")
+        print("triggered register_insert_data()")
         sql = "INSERT INTO RegisterInfo VALUES ('%s','%s','%s')" % (param[0],param[1],param[2])
         sql2 = "INSERT INTO UserPersonalInfo (Account, Nickname) VALUES ('%s','%s')" % (
             param[0], nickname)
@@ -54,7 +54,7 @@ class UserInfo(dBase):
             return True
 
     def userCheck(self, param):
-        print("triggerred userCheck()")
+        print("triggered userCheck()")
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s' AND Password = '%s'" % (param[0], param[1])
         try:
             self.cursor.execute(sql)

@@ -35,7 +35,7 @@ class Verify:
                     self.userid = str(_json['Result']['UserId'])
                     self.token = _json['Result']['AccessToken']
         except Exception as e:
-            print('Exception triggerred in requesting token => {}'.format(e))
+            print('Exception triggered in requesting token => {}'.format(e))
         else:
             print('request token Success!')
 

@@ -77,7 +77,7 @@ class Model(dBase):
 
 
     def insert(self, param):
-        print("triggerred Model.insert()")
+        print("triggered Model.insert()")
         week = date2AbsThisYearWeek(param[3])
         if self.getLatest(param[0], param[1]):
             sql = "insert into ModelResult (Account, Label, Possibility, Time ,Week,Validate) values ('%s','%s','%s','%s','%s','%i')" % (
@@ -120,7 +120,7 @@ class Model(dBase):
             else:
                 return int(res[0])
         except Exception as e:
-            print("Exception triggerred =>{}".format(e))
+            print("Exception triggered =>{}".format(e))
             pass
 
 

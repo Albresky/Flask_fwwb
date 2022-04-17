@@ -13,7 +13,7 @@ from _pymysql import *
 # 继承dBase父类
 class Alcohol(dBase):
     def upload_alcohol_data(self, param):
-        print("triggerred upload_alcohol_data()")
+        print("triggered upload_alcohol_data()")
         sql = "INSERT INTO Alcohol VALUES (%s,%s,%s)"
         try:
             self.initCursor()
@@ -23,5 +23,5 @@ class Alcohol(dBase):
             print("register_insert_data() Success!")
             return True
         except Exception as e:
-            print("Exception  triggerred => {}".format(e))
+            print("Exception  triggered => {}".format(e))
             return False

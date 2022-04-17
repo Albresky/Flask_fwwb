@@ -13,7 +13,7 @@ from functions import isNone
 # 继承dBase父类
 class Login(dBase):
     def isExist(self, account):
-        print("triggerred Register.isExiist()")
+        print("triggered Register.isExiist()")
         self.initCursor()
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
         self.cursor.execute(sql)
@@ -25,7 +25,7 @@ class Login(dBase):
         return True
 
     def userCheck(self, param):
-        print("triggerred Login.userCheck()")
+        print("triggered Login.userCheck()")
         self.initCursor()
         print(param)
         sql = "SELECT * FROM RegisterInfo WHERE Account = %s AND Password = %s"
@@ -45,7 +45,7 @@ class Login(dBase):
 
     def getRegisterDate(self, account):
         self.initCursor()
-        print("triggerred Login.getRegisterDate()")
+        print("triggered Login.getRegisterDate()")
         sql = "SELECT Time FROM RegisterInfo WHERE Account = '%s'" % account
         try:
             self.cursor.execute(sql)
@@ -61,7 +61,7 @@ class Login(dBase):
             return 0
 
     def loadInfo(self, account):
-        print("triggerred Register.loadInfo")
+        print("triggered Register.loadInfo")
         self.initCursor()
         sql = "SELECT * FROM UserPersonalInfo WHERE Account = '%s'" % account
         _data = {
@@ -90,7 +90,7 @@ class Login(dBase):
 
 
     def UpdateUserInfo(self,param):
-        print("triggerred Register.UpdateInfo")
+        print("triggered Register.UpdateInfo")
         
         sql = "UPDATE UserPersonalInfo SET Nickname = %s, Gender = %s, Age = %s, Address = %s WHERE Account = %s"
         try:
@@ -109,7 +109,7 @@ class Login(dBase):
             return False
 
     def UpdateRelativesInfo(self,param):
-        print("triggerred Register.UpdateRelativesInfo")
+        print("triggered Register.UpdateRelativesInfo")
         
         sql = "UPDATE UserPersonalInfo SET RalativesPhone = %s WHERE Account = %s"
         try:
@@ -129,7 +129,7 @@ class Login(dBase):
 
 
     def ChangePwd(self,param):
-        print("triggerred Register.ChangePwd()")
+        print("triggered Register.ChangePwd()")
         sql="UPDATE RegisterInfo SET Password = %s WHERE Account = %s"
         try:
             param1=(param[-1],param[-2])

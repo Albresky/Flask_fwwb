@@ -44,7 +44,7 @@ class Health(dBase):
         super().__init__(database)
 
     def updateHealth(self, account):
-        print("triggerred Health.updateHealth()")
+        print("triggered Health.updateHealth()")
         mtime = datetime.now()
         week = date2AbsThisYearWeek(mtime)
         self.bHealth.updateHealth()
@@ -55,7 +55,7 @@ class Health(dBase):
         return param
 
     def uploadHealth(self, account):
-        print("triggerred Health.insert()")
+        print("triggered Health.insert()")
         # week = date2AbsThisYearWeek(param[3])
         # sqlHealth = "insert into Health (Account, BodyTemperature, BloodPressureHigh ,BloodPressureLow,BloodOxygen,HeartRate,Time,Week) values ('%s',%i,%i,%i,%i,%i,'%s',%i)" % (
         #     param[0], param[1], param[2], param[3], param[4], param[5], param[6], param[7])
@@ -75,7 +75,7 @@ class Health(dBase):
             return False
 
     def getHealth(self, account):
-        print("triggerred Health.getHealth()")
+        print("triggered Health.getHealth()")
         sql = "SELECT * FROM Health WHERE Account = %s ORDER BY Time DESC LIMIT 0,1" % account
         try:
             print(sql)
@@ -95,7 +95,7 @@ class Health(dBase):
             return None
 
     def getHistory(self,account,index):
-        print("triggerred Health.getHistory()")
+        print("triggered Health.getHistory()")
         indicator=self.healthDict[index]
         print(indicator)
         sql = "SELECT %s,Time FROM Health WHERE Account = %s ORDER BY Time DESC LIMIT 0,7"%(indicator,account)

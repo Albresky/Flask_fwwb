@@ -11,7 +11,7 @@ from _pymysql import *
 
 class DriverInfo(dBase):
     def insert(self, param):
-        print("triggerred DriverInfo.insert()")
+        print("triggered DriverInfo.insert()")
         sql = "insert into ModelResult (Account, Label, Possibility, Time ) values (%s,%s,%s,%s)"
         try:
             self.cursor.execute(sql, param)
