@@ -11,7 +11,7 @@ import datetime
 import json
 import random
 import sys
-print(sys.path)
+# print(sys.path)
 from functions import *
 import time
 from _pymysql import *
@@ -30,13 +30,13 @@ from datetime import timedelta
 # health.uploadHealth('13182701023')
 
 
-url = "http://124.221.124.7:5000/user/someHealth"
-data = {
-    "account": "13182781023",
-    "indicator":"0"
-}
-req = requests.post(url=url, data=json.dumps(data))
-print(req.text)
+# url = "http://124.221.124.7:5000/user/someHealth"
+# data = {
+#     "account": "13182781023",
+#     "indicator":"0"
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
 
 
 # url = "http://124.221.124.7:5000/user/health"
@@ -187,13 +187,13 @@ print(req.text)
 # print(res)
 
 
-# url = "http://124.221.124.7:5000/model_result/download/weekly"
-# data = {
-#     "account": "13182781023",
-#     "action":1
-# }
-# req = requests.post(url=url, data=json.dumps(data))
-# print(req.text)
+url = "http://124.221.124.7:5000/model_result/download/weekly"
+data = {
+    "account": "13222222222",
+    "action":1
+}
+req = requests.post(url=url, data=json.dumps(data))
+print(req.text)
 
 
 # a=datetime.strptime("2022-04-13 13:29","%Y-%m-%d %H:%M")

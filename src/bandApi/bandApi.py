@@ -125,13 +125,14 @@ class bandHealth:
     def heartRateTime(self):
         return self.health_data['HealthHeartTime']
 
+    # 该Api上下压是反的！
     # 上压
     def bloodMax(self):
-        return self.health_data['BloodMax']
+        return self.health_data['BloodMin']
 
     # 下压
     def bloodMin(self):
-        return self.health_data['BloodMin']
+        return self.health_data['BloodMax']
 
     # 获取血压的时间
     def bloodPressureTime(self):

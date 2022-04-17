@@ -41,6 +41,7 @@ class Health(dBase):
         cfg = Config("config.ini")
         userid, token = getUT(cfg)
         self.bHealth = bandHealth(userid, token)
+        super().__init__(database)
 
     def updateHealth(self, account):
         print("triggerred Health.updateHealth()")
@@ -49,6 +50,8 @@ class Health(dBase):
         self.bHealth.updateHealth()
         param = (account, self.bHealth.BodyTemperature(), self.bHealth.bloodMax(), self.bHealth.bloodMin(),
                  self.bHealth.bloodOxygen(), self.bHealth.heartRate(), myTime(),week)
+        # param = (account, self.bHealth.BodyTemperature(), "217", self.bHealth.bloodMin(),
+        #          self.bHealth.bloodOxygen(), self.bHealth.heartRate(), myTime(),week)
         return param
 
     def uploadHealth(self, account):

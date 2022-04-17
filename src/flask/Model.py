@@ -106,17 +106,13 @@ class Model(dBase):
         print("label:{}".format(item))
         dateBegin = date + " 00:00:00"
         dateEnd = date + " 23:59:59"
-        sql = "SELECT SUM(Validate) FROM ModelResult WHERE (Account = '%s' AND (Time BETWEEN '%s' AND '%s') AND (Label = '%s'))" % (
+        sql = "SELECT COUNT(*) FROM ModelResult WHERE (Account = '%s' AND (Time BETWEEN '%s' AND '%s') AND (Label = '%s') AND Validate = 1 )" % (
             account, dateBegin, dateEnd, item)
         try:
-            print(sql)
             self.initCursor()
-            print("InitCursor() Success!")
             self.cursor.execute(sql)
-            print("Sql executed Success!")
             res = self.cursor.fetchone()
             self.close_db()
-            print(res)
             if res is None:
                 return 0
             elif res[0] is None:
@@ -126,7 +122,6 @@ class Model(dBase):
         except Exception as e:
             print("Exception triggerred =>{}".format(e))
             pass
-            # return 0
 
 
 

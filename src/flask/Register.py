@@ -14,8 +14,10 @@ class Register(dBase):
     def isExist(self, account):
         print("triggerred Register.isExiist()")
         sql = "SELECT * FROM RegisterInfo WHERE Account = '%s'" % account
+        self.initCursor()
         self.cursor.execute(sql)
         result = self.cursor.fetchone()
+        self.close_db()
         print(result)
         if result is None:
             return False
@@ -29,9 +31,7 @@ class Register(dBase):
         param = param + (now,)
         if self.register_insert_data(nickname, param):
             if self.userCheck(param):
-                self.close_db()
                 return 1
-        self.close_db()
         return -1
 
     def register_insert_data(self, nickname, param):
@@ -42,29 +42,35 @@ class Register(dBase):
         print(sql)
         print(sql2)
         try:
+            self.initCursor()
             self.cursor.execute(sql)
             self.cursor.execute(sql2)
             self.conn.commit()
-        except mysql.connector.Error as e:
-            print('sql connect fails!{}'.format(e))
-            self.conn.rollback()
-            return False
-        else:
+            self.close_db()
             print("register_insert_data() Success!")
             return True
+        except Exception as e:
+            print("Exception triggerred =>{}".format(e))
+            self.conn.rollback()
+            return False
+
 
     def userCheck(self, param):
-        print("triggerred userCheck()")
-        sql = "SELECT * FROM RegisterInfo WHERE Account = '%s' AND Password = '%s'" % (param[0], param[1])
+        print("triggerred Register.userCheck()")
+        sql = "SELECT * FROM RegisterInfo WHERE (Account = '%s' AND Password = '%s')" % (param[0], param[1])
         try:
+            print(sql)
+            self.initCursor()
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
+            self.close_db()
             print(result)
             if result is None:
                 print("userCheck FAIL!")
                 return False
+            else:
+                print("userCheck PASS!")
+                return True
         except Exception as e:
-            raise "Esception => {}".format(e)
-        else:
-            print("userCheck PASS!")
-            return True
+            print("Exception triggerred =>{}".format(e))
+

@@ -26,9 +26,11 @@ RegisterObj = []
 RegisterUserDict = []
 
 myModel = Model('User')
+myModelUpload=Model('User')
 myLogin = Login('User')
 myHealth = Health('User')
 myAlcohol = Alcohol('User')
+myRegister = Register('User')
 
 app = Flask(__name__)
 
@@ -62,7 +64,6 @@ def register():
                 nickname is not None \
                 :
             param = (account, password)
-            myRegister = Register('User')
             res = myRegister.register(nickname, param)
             if res == 0:
                 return '{"code":"false","Msg":" User Exists!"}'
@@ -102,16 +103,15 @@ def login():
         return '{"code":"false","Msg":"Login Fail! Flask Exception triggerred!"}'
 
 
-
-@app.route('/alcohol',methods=['POST'])
+@app.route('/alcohol', methods=['POST'])
 def UploadAlcohol():
     try:
-        data= json.loads(request.data)
+        data = json.loads(request.data)
         account = data['account']
         ppm = data['ppm']
-        time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        param = (account,ppm,time)
-        if  myAlcohol.upload_alcohol_data(param):
+        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        param = (account, ppm, time)
+        if myAlcohol.upload_alcohol_data(param):
             return '{"code":"true","Msg":"Upload Alcohol Success!"}'
         else:
             return '{"code":"false","Msg":"Upload Alcohol Fail!"}'
@@ -120,14 +120,9 @@ def UploadAlcohol():
         return '{"code":"false","Msg":"Exception triggered!"}'
 
 
-
-
 @app.route('/model_result/download/daily', methods=['POST'])
 def GetDriverInfoDaily():
     try:
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-        print(request)
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         data = json.loads(request.data)
         print(data)
         account = data['account']
@@ -144,7 +139,7 @@ def GetDriverInfoDaily():
                     "callUp": res['8'],
                     "noSafetyBelts": res['11'],
                     "smoke": res['9'],
-                    "other": res['4'] + res['5'] + res['6'] + res['7'] + res['10']+res['12'],
+                    "other": res['4'] + res['5'] + res['6'] + res['7'] + res['10'] + res['12'],
                     "operatingTheRadio": res['4'],
                     "drinking": res['5'],
                     "nodding": res['12'],
@@ -152,8 +147,7 @@ def GetDriverInfoDaily():
                     "reachingBehindAndTurningHead": res['6'] + res['10']
                 }
             }
-            return results
-
+            return json.dumps(results)
     except Exception as e:
         raise e
     else:
@@ -207,7 +201,7 @@ def model_upload():
         time = timestamp2datetime(int(data['Time']))
         param = (account, label, possibility, time)
         print(param)
-        if myModel.insert(param):
+        if myModelUpload.insert(param):
             return '{"code":"true","Msg":"model result store Success!"}'
         else:
             return '{"code":"fail","Msg":"model result store Fail"}'
@@ -225,27 +219,52 @@ def getDriverInfoWeekly():
     registerWeek = date2AbsThisYearWeek(myLogin.getRegisterDate(account))
     print("resgisterWeek:{}".format(registerWeek))
     currentWeek = date2AbsThisYearWeek(datetime.now())
+    weeks=currentWeek-registerWeek+1
     driverInfoWeekly = []
     try:
-        for i in range(registerWeek, currentWeek + 1):
-            print("Week => {}".format(i))
-            driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, i))
-
-        print(driverInfoWeekly)
-        leng = len(driverInfoWeekly)
-        if leng != 0:
-            data = []
-            for i in range(leng):
-                the_week = i + 1
-                data.append(str(the_week) + ":" + str(driverInfoWeekly[i]))
-            print(data)
-            results = {
-                "code": "true",
-                "data": data
-            }
-            return json.dumps(results)
+        if weeks<=7:
+            for i in range(registerWeek, currentWeek + 1):
+                print("Week => {}".format(i))
+                driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, i))
+            print(driverInfoWeekly)
+            leng = len(driverInfoWeekly)
+            if leng != 0:
+                data = []
+                for i in range(leng):
+                    the_week = i + 1
+                    data.append(str(the_week) + ":" + str(driverInfoWeekly[i]))
+                if leng <7:
+                    for j in range(leng+1,8):
+                        data.append(str(j)+":"+"0")
+                print(data)
+                results = {
+                    "code": "true",
+                    "data": data,
+                    "Msg":"Load historic Model data Success!"
+                }
+                return json.dumps(results)
+            else:
+                return '{"code":"fail","Msg":"No records"}'
         else:
-            return '{"code":"fail","Msg":"No records"}'
+            for ii in range(currentWeek-6, currentWeek + 1):
+                print("Week => {}".format(ii))
+                driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, ii))
+            print(driverInfoWeekly)
+            leng2=len(driverInfoWeekly)
+            if leng2 !=0:
+                data2=[]
+                for jj in range(7):
+                    the_week=weeks-6+jj
+                    data2.append(str(the_week) + ":" + str(driverInfoWeekly[jj]))
+                results = {
+                    "code": "true",
+                    "data": data2,
+                    "Msg": "Load historic Model data Success!"
+                }
+                return json.dumps(results)
+            else:
+                return '{"code":"fail","Msg":"No records"}'
+
 
     except Exception as e:
         print("Exception triggered => {}".format(e))
@@ -333,7 +352,18 @@ def get_health():
             }
         else:
             return_data = {
-                "code": "false",
+                "code": "true",
+                "data": {
+                    "temperature": 0,
+                    "heartBeat": 0,
+                    "bloodPressureHigh": 0,
+                    "bloodPressureLow": 0,
+                    "oximetry": 0,
+                    "drivingTime": "0",
+                    "location": "浙江省杭州市钱塘区2号大街杭州电子科技大学",
+                    "weather": "阴",
+                    "temperatures": '18'
+                },
                 "Msg": "No HealthData Records"
             }
         return json.dumps(return_data)
@@ -348,18 +378,18 @@ def getSomeHealth():
     account = data['account']
     index = data["indicator"]
     try:
-        results= myHealth.getHistory(account,index)
+        results = myHealth.getHistory(account, index)
         if results is not None:
-            history=[]
+            history = []
             print(results)
             for i in range(len(results)):
                 history.append(results[i][0])
                 return_data = {
                     "code": "true",
                     "data": {
-                        "realTimeData":history
-                        }
+                        "realTimeData": history
                     }
+                }
             return json.dumps(return_data)
         else:
             return '{"code":"false","Msg":"Exception triggered!"}'
