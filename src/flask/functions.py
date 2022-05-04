@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 import requests
 from dateutil import rrule
+import json
 
 
 # return current datetime (UTC-8, Beijing Zone)
@@ -68,12 +69,27 @@ def getCurrentWeekDays():
 
 
 def getWeather(location):
-    url = "http://api.help.bj.cn/apis/weather/?id=" + str(location)
+    url = "http://api.help.bj.cn/apis/weather/?id="+location
+    headers={
+        "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Encoding":"gzip, deflate",
+        "Accept-Language":"zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+        "Cache-Control":"max-age=0",
+        "Connection":"keep-alive",
+        "Host":"api.help.bj.cn",
+        "Upgrade-Insecure-Requests":"1",
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0"
+    }
     try:
-        res = requests.get(url=url)
-        if res.status_code == 200:
-            pass
-        # ToDo
-    except:
-        pass
-
+        print(url)
+        req = requests.get(url=url,headers=headers)
+        print(req.status_code)
+        if req.status_code == 200:
+            res= str(req.content,'utf-8').split(',')
+            temp=res[4].split(':')[-1].split('"')[1]
+            weather=res[-5].split(':')[-1].split('"')[1]
+            return weather,temp
+        else:
+            print("Couldn't get weather data!")
+    except Exception as e:
+        print("Exception triggered => {}".format(e))

@@ -76,7 +76,7 @@ class Health(dBase):
 
     def getHealth(self, account):
         print("triggered Health.getHealth()")
-        sql = "SELECT * FROM Health WHERE Account = %s ORDER BY Time DESC LIMIT 0,1" % account
+        sql = "SELECT * FROM Health WHERE Account = '%s' ORDER BY Time DESC LIMIT 0,1" % account
         try:
             print(sql)
             self.initCursor()

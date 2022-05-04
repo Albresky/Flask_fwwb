@@ -109,10 +109,11 @@ from datetime import timedelta
 # req = requests.post(url=url, data=json.dumps(date))
 # print(req.text)
 
+
 # while True:
-#     url = "http://124.221.124.7:5000//model_result/upload"
+#     url = "http://124.221.124.7/model_result/upload"
 #     data = {
-#         "Account": "19149567122",
+#         "Account": "19157690500",
 #         "Label": random.randint(0,13),
 #         "Possibility":round(random.random(),4),
 #         "Time":int(time.time())
@@ -140,15 +141,14 @@ from datetime import timedelta
 # print(date.split(' ')[0])
 # print(datetime.strptime(date.split(' ')[0],"%Y-%m-%d"))
 
-# url = "http://124.221.124.7:5000//model_result/upload"
+# url = "http://124.221.124.7/model_result/upload"
 # data = {
-#     "Account": "19149567122",
-#     "Date":"2022-04-11"
+#     "Account": "19157690500",
+#     "Label":str(random.randint(0,12)),
+#     "Possibility":str(random.randint(1,10)/10)
 # }
 # print(data)
-# data_json=json.dumps(data)
-# print(data_json)
-# req = requests.post(url=url, data=data_json)
+# req = requests.post(url=url, data=json.dumps(data))
 # print(req.text)
 
 # url = "http://124.221.124.7:5000/model_result/download/daily"
@@ -187,17 +187,28 @@ from datetime import timedelta
 # print(res)
 
 
-url = "http://124.221.124.7:5000/model_result/download/weekly"
-data = {
-    "account": "13222222222",
-    "action":1
-}
-req = requests.post(url=url, data=json.dumps(data))
-print(req.text)
+# url = "http://124.221.124.7:5000/model_result/download/weekly"
+# data = {
+#     "account": "13222222222",
+#     "action":1
+# }
+# req = requests.post(url=url, data=json.dumps(data))
+# print(req.text)
 
 
 # a=datetime.strptime("2022-04-13 13:29","%Y-%m-%d %H:%M")
 # b=datetime.strptime("2022-04-13 13:25","%Y-%m-%d %H:%M")
 # print((a-b).total_seconds()/3600)
 # # print(b)
+
+
+url="http://124.221.124.7/user/health"
+
+data={
+    "account": "19149567122"
+}
+
+req=requests.post(url=url, data=json.dumps(data))
+print(req.status_code)
+# print(req.text)
 

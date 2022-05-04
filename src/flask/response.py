@@ -25,15 +25,19 @@ LoginUserDict = []
 RegisterObj = []
 RegisterUserDict = []
 
-myModel = Model('User')
-myModelUpload=Model('User')
-myLogin = Login('User')
-myHealth = Health('User')
-myAlcohol = Alcohol('User')
-myRegister = Register('User')
+# myModel = Model('User')
+# myModelUpload=Model('User')
+# myLogin = Login('User')
+# myHealth = Health('User')
+# myAlcohol = Alcohol('User')
+# myRegister = Register('User')
 
 app = Flask(__name__)
 
+
+@app.route('/')
+def hello():
+    return 'Welcome to ATravel'
 
 @app.route('/test')
 def test():
@@ -64,6 +68,7 @@ def register():
                 nickname is not None \
                 :
             param = (account, password)
+            myRegister = Register("User")
             res = myRegister.register(nickname, param)
             if res == 0:
                 return '{"code":"false","Msg":" User Exists!"}'
@@ -88,7 +93,7 @@ def login():
         print("Start Logining...")
         if account is not None and password is not None:
             param = (account, password)
-            # myLogin = Login('User')
+            myLogin = Login('User')
             if myLogin.userCheck(param) is False:
                 return '{"code":"false","Msg":"User do not exist!"}'
             else:
@@ -111,6 +116,7 @@ def UploadAlcohol():
         ppm = data['ppm']
         time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         param = (account, ppm, time)
+        myAlcohol = Alcohol("User")
         if myAlcohol.upload_alcohol_data(param):
             return '{"code":"true","Msg":"Upload Alcohol Success!"}'
         else:
@@ -127,6 +133,7 @@ def GetDriverInfoDaily():
         print(data)
         account = data['account']
         date = data['date']
+        myModel = Model("User")
         res = myModel.getDriverInfoDaily(account, date)
         print("daily => {}".format(res))
         if res is not None:
@@ -165,6 +172,7 @@ def getDriverInfoThisWeek():
     account = data['account']
     action = data['action']
     try:
+        myModel = Model("User")
         res = myModel.getDriverInfoCurrentWeek(account, action)
         results = {
             "code": "true",
@@ -201,6 +209,7 @@ def model_upload():
         time = timestamp2datetime(int(data['Time']))
         param = (account, label, possibility, time)
         print(param)
+        myModelUpload = Model("User")
         if myModelUpload.insert(param):
             return '{"code":"true","Msg":"model result store Success!"}'
         else:
@@ -216,13 +225,15 @@ def getDriverInfoWeekly():
     print(data)
     account = data['account']
     action = data['action']
+    myLogin = Login("User")
     registerWeek = date2AbsThisYearWeek(myLogin.getRegisterDate(account))
     print("resgisterWeek:{}".format(registerWeek))
     currentWeek = date2AbsThisYearWeek(datetime.now())
-    weeks=currentWeek-registerWeek+1
+    weeks = currentWeek - registerWeek + 1
     driverInfoWeekly = []
+    myModel = Model("User")
     try:
-        if weeks<=7:
+        if weeks <= 7:
             for i in range(registerWeek, currentWeek + 1):
                 print("Week => {}".format(i))
                 driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, i))
@@ -233,28 +244,28 @@ def getDriverInfoWeekly():
                 for i in range(leng):
                     the_week = i + 1
                     data.append(str(the_week) + ":" + str(driverInfoWeekly[i]))
-                if leng <7:
-                    for j in range(leng+1,8):
-                        data.append(str(j)+":"+"0")
+                if leng < 7:
+                    for j in range(leng + 1, 8):
+                        data.append(str(j) + ":" + "0")
                 print(data)
                 results = {
                     "code": "true",
                     "data": data,
-                    "Msg":"Load historic Model data Success!"
+                    "Msg": "Load historic Model data Success!"
                 }
                 return json.dumps(results)
             else:
                 return '{"code":"fail","Msg":"No records"}'
         else:
-            for ii in range(currentWeek-6, currentWeek + 1):
+            for ii in range(currentWeek - 6, currentWeek + 1):
                 print("Week => {}".format(ii))
                 driverInfoWeekly.append(myModel.getDriverInfoWeekly(account, action, ii))
             print(driverInfoWeekly)
-            leng2=len(driverInfoWeekly)
-            if leng2 !=0:
-                data2=[]
+            leng2 = len(driverInfoWeekly)
+            if leng2 != 0:
+                data2 = []
                 for jj in range(7):
-                    the_week=weeks-6+jj
+                    the_week = weeks - 6 + jj
                     data2.append(str(the_week) + ":" + str(driverInfoWeekly[jj]))
                 results = {
                     "code": "true",
@@ -281,6 +292,7 @@ def updatePersonalInfo():
     age = data['age']
     address = data['address']
     param = (nickname, gender, age, address, account)
+    myLogin = Login("User")
     try:
         if myLogin.UpdateUserInfo(param):
             print("UpdateUserInfo Success!")
@@ -299,6 +311,7 @@ def updateRelativesInfo():
     account = data['account']
     relativesPhone = data['relativesPhone']
     param = (relativesPhone, account)
+    myLogin = Login("User")
     try:
         if myLogin.UpdateRelativesInfo(param):
             print("UpdateRelativesInfo Success!")
@@ -315,6 +328,7 @@ def updateRelativesInfo():
 def changePwd():
     data = json.loads(request.data)
     param = (data["newPassword"], data["oldPassword"], data["account"])
+    myLogin = Login("User")
     try:
         if myLogin.ChangePwd(param):
             print("Change password Success!")
@@ -332,6 +346,8 @@ def changePwd():
 def get_health():
     data = json.loads(request.data)
     account = data["account"]
+    myHealth = Health("User")
+    myWeather=getWeather("101210101")
     try:
         healthData = myHealth.getHealth(account)
         if healthData is not None:
@@ -344,9 +360,9 @@ def get_health():
                     "bloodPressureLow": healthData[3],
                     "oximetry": healthData[4],
                     "drivingTime": "123",
-                    "location": "中国",
-                    "weather": "多云",
-                    "temperatures": ''
+                    "location": "暂未绑定设备",
+                    "weather": myWeather[0],
+                    "temperatures": myWeather[1]
                 },
                 "Msg": "Get HealthData Success!"
             }
@@ -360,9 +376,9 @@ def get_health():
                     "bloodPressureLow": 0,
                     "oximetry": 0,
                     "drivingTime": "0",
-                    "location": "浙江省杭州市钱塘区2号大街杭州电子科技大学",
-                    "weather": "阴",
-                    "temperatures": '18'
+                    "location": "暂未绑定设备",
+                    "weather": myWeather[0],
+                    "temperatures": myWeather[1]
                 },
                 "Msg": "No HealthData Records"
             }
@@ -377,6 +393,7 @@ def getSomeHealth():
     data = json.loads(request.data)
     account = data['account']
     index = data["indicator"]
+    myHealth = Health("User")
     try:
         results = myHealth.getHistory(account, index)
         if results is not None:
@@ -386,9 +403,7 @@ def getSomeHealth():
                 history.append(results[i][0])
                 return_data = {
                     "code": "true",
-                    "data": {
-                        "realTimeData": history
-                    }
+                    "data": history
                 }
             return json.dumps(return_data)
         else:
@@ -421,5 +436,5 @@ def getGPS():
     return mydb.getLocation()
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
