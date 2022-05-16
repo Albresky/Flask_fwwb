@@ -13,7 +13,7 @@ from Health import Health
 
 health = Health('User')
 while True:
-    if health.uploadHealth('13333333333'):
+    if health.uploadHealth(''):
         print("upload health Success @ %s"%(str(datetime.now())))
         time.sleep(30)
-        print(health.getHealth("13333333333"))
+        print(health.getHealth(""))

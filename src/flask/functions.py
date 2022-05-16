@@ -33,13 +33,6 @@ def date2AbsThisYearWeek(Datetime):
     else:
         raise "Datetime is not a datetime object"
 
-
-# # converte string-class datetime object to datetime-class object
-# def str2date(Datestr,year, month, day):
-#     year, month, day = Datestr.split('-')
-#     # return datetime(year=int(year), month=int(month), day=int(day), minute=int(minute), second=int(second))
-
-
 # converte timestamp to datetime
 def timestamp2datetime(timeStamp):
     try:

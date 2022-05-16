@@ -11,7 +11,7 @@ from pymysql import *
 
 # def createDataTable(database,myExecute):
 #     # 1. 创建数据库连接对象
-#     conn = connect(host="124.221.124.7", user="remote", password="fwwb2022", database=database)
+#     conn = connect(host="serverIpAddress", user="remote", password="fwwb2022", database=database)
 #     # 2.从连接对象上获取游标
 #     mycur = conn.cursor()
 #     # 3.执行创建数据库的表tb_user,返回int类型的结果  成功添加表的话，返回0 ；添加失败抛出异常
@@ -40,7 +40,7 @@ from pymysql import *
 
 
 # 1. 创建数据库连接对象
-conn = connect(host="124.221.124.7", user="remote", password="fwwb2022", database="User")
+conn = connect(host="serverIpAddress", user="remote", password="fwwb2022", database="User")
 # 2.从连接对象上获取游标
 mycur = conn.cursor()
 # 3.执行创建数据库的表tb_user,返回int类型的结果  成功添加表的话，返回0 ；添加失败抛出异常

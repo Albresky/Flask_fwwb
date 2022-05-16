@@ -14,7 +14,7 @@ import json
 from MQ3 import Gas
 from audio.AudioPlay import AudioPlay
 
-url = "http://124.221.124.7:5000/alcohol"
+url = "http://serverIpAddress:5000/alcohol"
 data = {
     "account": "13182781023",
     "ppm": ""

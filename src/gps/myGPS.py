@@ -12,7 +12,7 @@ import requests
 
 
 gpsSerial = serial.Serial("/dev/ttyAMA0", 9600)
-url="http://124.221.124.7:5000/gps/"
+url=""
 
 
 while True:

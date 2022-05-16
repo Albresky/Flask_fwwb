@@ -16,11 +16,8 @@ gpsSerial = serial.Serial("/dev/ttyAMA0", 9600)
 # cnt = 0
 
 while True:
-    # cnt +=1
-    # print('cnt={}'.format(cnt))
     line = str(str(gpsSerial.readline()))
     print(line)
-    # time.sleep(2)
     if line.startswith("b\'$GNGLL"):
         print(line)
         line = str(line).split(',')
@@ -33,5 +30,3 @@ while True:
             print('Locate Fail!')
         finally:
             print("OK!!!")
-        # time.sleep(0.5)
-        

@@ -30,9 +30,9 @@ class Model(dBase):
         ]
         self.database = database
         self.mysql_config = {
-            'host': '124.221.124.7',
-            'user': 'remote',
-            'password': 'fwwb2022',
+            'host': '',  # Database Server IP address
+            'user': '',
+            'password': '',
             'database': database,
             'auth_plugin': 'mysql_native_password'
         }
@@ -45,11 +45,7 @@ class Model(dBase):
         finally:
             print("database={} => connect Success".format(database))
 
-        # if self.isTableExist(self.tableName) is False:
-        #     self.createTable(self.tableName)
-
         super().__init__(database)
-
 
     def getLatest(self, account, label):
         print("now Label => {}".format(label))
@@ -61,9 +57,9 @@ class Model(dBase):
             if res is None:
                 print("Can not get last record!")
                 return False
-            result=res[0]
+            result = res[0]
             self.close_db()
-            print("results:{} | last Label:{}".format(result,label))
+            print("results:{} | last Label:{}".format(result, label))
             if result == label:
                 print("result is same as now_label")
                 return True
@@ -73,8 +69,6 @@ class Model(dBase):
         except Exception as e:
             print(e)
             raise e
-
-
 
     def insert(self, param):
         print("triggered Model.insert()")
@@ -99,8 +93,6 @@ class Model(dBase):
             print("insert_model_data() Success!")
             return True
 
-
-
     def getCountDaily(self, account, date, item):
         print("triggered getCountDaily()")
         print("label:{}".format(item))
@@ -123,8 +115,6 @@ class Model(dBase):
             print("Exception triggered =>{}".format(e))
             pass
 
-
-
     def getDriverInfoDaily(self, account, Datetime):
         print("triggered getDriverInfoDaily()")
         results = {}
@@ -133,16 +123,15 @@ class Model(dBase):
         print(results)
         return results
 
-
-
-    def getDriverInfoWeekly(self,account,action,week):
+    def getDriverInfoWeekly(self, account, action, week):
         print("triggered getDriverInfoWeekly()")
-        sql ="SELECT SUM(Validate) FROM ModelResult WHERE ( Account = '%s' AND Week = '%i' AND Label = '%s')"%(account,week,action)
+        sql = "SELECT SUM(Validate) FROM ModelResult WHERE ( Account = '%s' AND Week = '%i' AND Label = '%s')" % (
+        account, week, action)
         print(sql)
         try:
             self.initCursor()
             self.cursor.execute(sql)
-            res=self.cursor.fetchone()[0]
+            res = self.cursor.fetchone()[0]
             self.close_db()
             if res is None:
                 return 0
@@ -153,16 +142,13 @@ class Model(dBase):
             print(e)
             return 0
 
-
-    def getDriverInfoCurrentWeek(self, account,action):
+    def getDriverInfoCurrentWeek(self, account, action):
         print("triggered getDriverInfoCurrentWeek()")
-        weekdays=getCurrentWeekDays()
-        weekday_actions=[]
+        weekdays = getCurrentWeekDays()
+        weekday_actions = []
         for i in range(7):
-            times=self.getCountDaily(account,weekdays[i],action)
+            times = self.getCountDaily(account, weekdays[i], action)
             print("times => {}".format(times))
             weekday_actions.append(times)
         print("weekday_actions => {}".format(weekday_actions))
         return weekday_actions
-
-

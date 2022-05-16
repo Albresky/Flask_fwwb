@@ -17,9 +17,9 @@ class Health(dBase):
     def __init__(self, database):
         self.database = database
         self.mysql_config = {
-            'host': '124.221.124.7',
-            'user': 'remote',
-            'password': 'fwwb2022',
+            'host': '',    # Database Server IP address
+            'user': '',
+            'password': '',
             'database': database,
             'auth_plugin': 'mysql_native_password'
             # 'buffered':True
@@ -50,15 +50,10 @@ class Health(dBase):
         self.bHealth.updateHealth()
         param = (account, self.bHealth.BodyTemperature(), self.bHealth.bloodMax(), self.bHealth.bloodMin(),
                  self.bHealth.bloodOxygen(), self.bHealth.heartRate(), myTime(),week)
-        # param = (account, self.bHealth.BodyTemperature(), "217", self.bHealth.bloodMin(),
-        #          self.bHealth.bloodOxygen(), self.bHealth.heartRate(), myTime(),week)
         return param
 
     def uploadHealth(self, account):
         print("triggered Health.insert()")
-        # week = date2AbsThisYearWeek(param[3])
-        # sqlHealth = "insert into Health (Account, BodyTemperature, BloodPressureHigh ,BloodPressureLow,BloodOxygen,HeartRate,Time,Week) values ('%s',%i,%i,%i,%i,%i,'%s',%i)" % (
-        #     param[0], param[1], param[2], param[3], param[4], param[5], param[6], param[7])
         sqlHealth = "INSERT INTO Health (Account,BodyTemperature,BloodPressureHigh,BloodPressureLow,BloodOxygen,HeartRate,Time,Week) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         param = self.updateHealth(account)
         try:
@@ -117,10 +112,7 @@ class Health(dBase):
 
     def getLocation(self):
         sql = "SELECT * FROM GPS"
-        # 执行SQL语句
         self.cursor.execute(sql)
-        # 获取所有记录列表
         results = self.cursor.fetchall()
-        # print(results)
         self.close_db()
         return json.dumps(results[0])

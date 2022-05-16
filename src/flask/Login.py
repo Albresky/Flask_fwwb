@@ -91,7 +91,6 @@ class Login(dBase):
 
     def UpdateUserInfo(self,param):
         print("triggered Register.UpdateInfo")
-        
         sql = "UPDATE UserPersonalInfo SET Nickname = %s, Gender = %s, Age = %s, Address = %s WHERE Account = %s"
         try:
             if self.isExist(param[-1]):
@@ -110,7 +109,6 @@ class Login(dBase):
 
     def UpdateRelativesInfo(self,param):
         print("triggered Register.UpdateRelativesInfo")
-        
         sql = "UPDATE UserPersonalInfo SET RalativesPhone = %s WHERE Account = %s"
         try:
             if self.isExist(param[-1]):

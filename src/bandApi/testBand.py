@@ -8,7 +8,7 @@
 import os.path
 import time
 import requests
-from bandApi import Location,bandHealth
+from bandApi import Location, bandHealth
 from Load import Config, getUT
 
 if __name__ == "__main__":

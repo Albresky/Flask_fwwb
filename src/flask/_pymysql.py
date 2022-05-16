@@ -13,9 +13,9 @@ class dBase:
     def __init__(self, database):
         self.database = database
         self.mysql_config = {
-            'host': '124.221.124.7',
-            'user': 'remote',
-            'password': 'fwwb2022',
+            'host': '', # Database Server IP address
+            'user': '',
+            'password': '',
             'database': database,
             'auth_plugin': 'mysql_native_password'
             # 'buffered':True
@@ -34,15 +34,6 @@ class dBase:
             self.cursor.close()
         if self.conn is not None:
             self.conn.close()
-
-    # def insert_sms_data(self, param):
-    #     sql = 'insert into User_3 (gps, BodyTemp, BloodOxygen, HeartRate, time) values (%s, %s, %s, %s, %s)'
-    #     try:
-    #         self.cursor.execute(sql, param)
-    #         self.conn.commit()
-    #     except mysql.connector.Error as e:
-    #         print('sql connect fails!{}'.format(e))
-    #         return False
 
     def insert(self, param):
         now = myTime()

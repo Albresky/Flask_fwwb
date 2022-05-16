@@ -30,7 +30,7 @@ from datetime import timedelta
 # health.uploadHealth('13182701023')
 
 
-# url = "http://124.221.124.7:5000/user/someHealth"
+# url = "http://serverIpAddress:5000/user/someHealth"
 # data = {
 #     "account": "13182781023",
 #     "indicator":"0"
@@ -39,25 +39,25 @@ from datetime import timedelta
 # print(req.text)
 
 
-# url = "http://124.221.124.7:5000/user/health"
+# url = "http://serverIpAddress:5000/user/health"
 # data = {
-#     "account": "13182701023"
+#     "account": "1318270xxxx"
 # }
 # req = requests.post(url=url, data=json.dumps(data))
 # print(req.text)
 
-# url = "http://124.221.124.7:5000/user/updateRelativesInfo"
+# url = "http://serverIpAddress:5000/user/updateRelativesInfo"
 # data = {
-#     "account": "18795688976",
+#     "account": "187956889xx",
 #     "relativesPhone": "19999999999"
 # }
 # req = requests.post(url=url, data=json.dumps(data))
 # print(req.text)
 
 
-# url = "http://124.221.124.7:5000/user/updatePersonalInfo"
+# url = "http://serverIpAddress:5000/user/updatePersonalInfo"
 # data = {
-#     "account": "18795688976",
+#     "account": "187956889xx",
 #     "nickname":"John",
 #     "gender": "male",
 #     "age":"20",
@@ -66,9 +66,9 @@ from datetime import timedelta
 # req = requests.post(url=url, data=json.dumps(data))
 # print(req.text)
 
-# url = "http://124.221.124.7:5000/user/changePwd"
+# url = "http://serverIpAddress:5000/user/changePwd"
 # data = {
-#     "account": "18795688976",
+#     "account": "187956889xx",
 #     "oldPassword":"newPWD",
 #     "newPassword":"newdddddPWD"
 # }
@@ -77,7 +77,7 @@ from datetime import timedelta
 
 
 
-# url = "http://124.221.124.7:5000/register"
+# url = "http://serverIpAddress:5000/register"
 # data = {
 #     "account": "16666666666",
 #     "nickname": "admin5",
@@ -87,7 +87,7 @@ from datetime import timedelta
 # print(req.text)
 
 
-# url = "http://124.221.124.7:5000/login"
+# url = "http://serverIpAddress:5000/login"
 # data = {
 #     "account": "15555555555",
 #     "password": "test"
@@ -95,7 +95,7 @@ from datetime import timedelta
 # req = requests.post(url=url, data=json.dumps(data))
 # print(req.text)
 
-# url = "http://124.221.124.7:5000/dirver_report/daily"
+# url = "http://serverIpAddress:5000/dirver_report/daily"
 #
 # time = str(datetime.now().strftime("%Y-%m-%d"))
 # print(time)
@@ -111,9 +111,9 @@ from datetime import timedelta
 
 
 # while True:
-#     url = "http://124.221.124.7/model_result/upload"
+#     url = "http://serverIpAddress/model_result/upload"
 #     data = {
-#         "Account": "19157690500",
+#         "Account": "191576905xx",
 #         "Label": random.randint(0,13),
 #         "Possibility":round(random.random(),4),
 #         "Time":int(time.time())
@@ -125,9 +125,9 @@ from datetime import timedelta
 #     time.sleep(5)
 
 # while True:
-# url = "http://124.221.124.7:5000/model_result/download/daily"
+# url = "http://serverIpAddress:5000/model_result/download/daily"
 # data = {
-#     "account": "13182781023",
+#     "account": "131827810xx",
 #     "date":"2022-04-15"
 # }
 # req = requests.post(url=url, data=json.dumps(data))
@@ -141,9 +141,9 @@ from datetime import timedelta
 # print(date.split(' ')[0])
 # print(datetime.strptime(date.split(' ')[0],"%Y-%m-%d"))
 
-# url = "http://124.221.124.7/model_result/upload"
+# url = "http://serverIpAddress/model_result/upload"
 # data = {
-#     "Account": "19157690500",
+#     "Account": "191576905xx",
 #     "Label":str(random.randint(0,12)),
 #     "Possibility":str(random.randint(1,10)/10)
 # }
@@ -151,9 +151,9 @@ from datetime import timedelta
 # req = requests.post(url=url, data=json.dumps(data))
 # print(req.text)
 
-# url = "http://124.221.124.7:5000/model_result/download/daily"
+# url = "http://serverIpAddress:5000/model_result/download/daily"
 # data = {
-#     "account": "19149567122",
+#     "account": "191495671xx",
 #     "date":"2022-04-12"
 # }
 # req = requests.post(url=url, data=json.dumps(data))
@@ -173,9 +173,9 @@ from datetime import timedelta
 
 # print(getCurrentWeekDays())
 
-# url = "http://124.221.124.7:5000/model_result/download/this_week"
+# url = "http://serverIpAddress:5000/model_result/download/this_week"
 # data = {
-#     "account": "19149567122",
+#     "account": "191495671xx",
 #     "action":1
 # }
 # req = requests.post(url=url, data=json.dumps(data))
@@ -187,7 +187,7 @@ from datetime import timedelta
 # print(res)
 
 
-# url = "http://124.221.124.7:5000/model_result/download/weekly"
+# url = "http://serverIpAddress:5000/model_result/download/weekly"
 # data = {
 #     "account": "13222222222",
 #     "action":1
@@ -202,13 +202,13 @@ from datetime import timedelta
 # # print(b)
 
 
-url="http://124.221.124.7/user/health"
+# url="http://serverIpAddress/user/health"
+#
+# data={
+#     "account": "191495671xx"
+# }
 
-data={
-    "account": "19149567122"
-}
-
-req=requests.post(url=url, data=json.dumps(data))
-print(req.status_code)
+# req=requests.post(url=url, data=json.dumps(data))
+# print(req.status_code)
 # print(req.text)
 

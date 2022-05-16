@@ -25,12 +25,6 @@ LoginUserDict = []
 RegisterObj = []
 RegisterUserDict = []
 
-# myModel = Model('User')
-# myModelUpload=Model('User')
-# myLogin = Login('User')
-# myHealth = Health('User')
-# myAlcohol = Alcohol('User')
-# myRegister = Register('User')
 
 app = Flask(__name__)
 
